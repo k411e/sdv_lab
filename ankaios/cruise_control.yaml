@@ -1,0 +1,17 @@
+apiVersion: v0.1
+workloads:
+  #carla:
+  #  runtime: podman
+  #  agent: agent_server
+  #  restartPolicy: ALWAYS
+  #  runtimeConfig: |
+  #    image: docker.io/carlasim/carla:latest
+  #    commandOptions: ["--privileged", "--gpus", "all", "--net=host", "-v", "/tmp/.X11-unix:/tmp/.X11-unix:rw"]
+  #    commandArgs: ["/bin/bash", "./CarlaUE4.sh", "-RenderOffScreen"]
+  zenoh_router:
+    runtime: podman
+    agent: agent_server
+    restartPolicy: ALWAYS
+    runtimeConfig: |
+      image: docker.io/eclipse/zenoh:latest
+      commandOptions: ["--init", "--net=host"]
