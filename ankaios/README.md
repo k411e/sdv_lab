@@ -52,7 +52,9 @@ Install Eclipse Ankaios with a single curl according to the [Ankaios installatio
 
 Follow the `Setup with script` section and install the version Eclipse Ankaios v0.6.0.
 
-When using Ubuntu-24.04 disable AppArmor like discribed in the Ankaios installation guide.
+**Note:** When using Ubuntu-24.04 disable AppArmor like discribed in the Ankaios installation guide.
+
+The installation script will automatically create a systemd service file for the Ankaios server and an Ankaios agent.
 
 ## Run Ankaios server
 
@@ -73,11 +75,13 @@ sudo systemctl start ank-agent
 ## Apply Ankaios manifest to create the desired state
 
 ```
-ank apply cruise_control.yaml
+ank -k apply cruise_control.yaml
 ```
 
 **Note:** If you want to remove all workloads specified in the `cruise_control.yaml` you can simply add `-d` paramter to the `ank apply` like the following:
 `ank apply -d cruise_control.yaml`. This might be helpful for incremental development.
+
+**Note:**: Per default, Ankaios runs in insecure mode (no mTLS), so `ank-cli` requires `--insecure` (`-k`). To avoid typing `-k` each time, set `export ANK_INSECURE=true`.
 
 # Commands to execute in the user computer
 
