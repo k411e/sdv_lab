@@ -1,12 +1,19 @@
-The ankaios is a system used for container orchestration. 
+[Eclipse Ankaios](https://eclipse-ankaios.github.io/ankaios/0.6) is an embedded software orchestrator targeted for automotive High Performance Computer (HPC) which suppports pluggable container runtimes. In the hackathon, Eclipse Ankaios with version v0.6.0 is used.
 
-The ankaios use podman, this is used to create images, manage containers and more. The podman is similar to docker.
+Ankaios supports [Podman](https://docs.podman.io/en/latest/) as container runtime.
 
-To understand the steps in this file please chgeck the ankaios architecture in the following page https://eclipse-ankaios.github.io/ankaios/0.3/architecture/
+To understand the next steps, please check out the [Eclipse Ankaios Architecture](https://eclipse-ankaios.github.io/ankaios/0.6/architecture).
+
+# Prerequisites
+
+- Any Linux or WSL2 on Windows
+
+Recommendation: Ubuntu-24.04 native or on WSL2
 
 # Commands to execute in the GPU server
 
 ## Prerequesites to run CARLA in a container
+
 GPU server with NVIDIA graphics card\
 NVIDIA Container toolkit installed
 
@@ -29,49 +36,68 @@ export NVIDIA_CONTAINER_TOOLKIT_VERSION=1.17.8-1
 ```
 
 ## Podman installation
+
+You can install Podman easily with the package manager like in Ubuntu:
+
 ```
 sudo apt-get update
 sudo apt-get -y install podman
 ```
+
+Otherwise follow the official [Podman installation instructions](https://podman.io/docs/installation#installing-on-linux).
+
 ## Ankaios installation
-```
-curl -sfL https://github.com/eclipse-ankaios/ankaios/releases/latest/download/install.sh | bash -
-```
+
+Install Eclipse Ankaios with a single curl according to the [Ankaios installation guide](https://eclipse-ankaios.github.io/ankaios/latest/usage/installation).
+
+Follow the `Setup with script` section and install the version Eclipse Ankaios v0.6.0.
+
+When using Ubuntu-24.04 disable AppArmor like discribed in the Ankaios installation guide.
 
 ## Run Ankaios server
+
 ```
 sudo systemctl start ank-server
 ```
 
 When this command is executed the service ank-server will read the configurations in the file /etc/ankaios/ank-server.conf
-
  
 ## Run Ankaios agent
+
 In the file /etc/ankaios/ank-agent.conf in the field name set "agent_server"
+
 ```
 sudo systemctl start ank-agent
 ```
+
 ## Apply Ankaios manifest to create the desired state
+
 ```
 ank apply cruise_control.yaml
 ```
 
+**Note:** If you want to remove all workloads specified in the `cruise_control.yaml` you can simply add `-d` paramter to the `ank apply` like the following:
+`ank apply -d cruise_control.yaml`. This might be helpful for incremental development.
+
 # Commands to execute in the user computer
-Install the ankaios and podman like it was done in the GPU server
+
+Install Eclipse Ankaios and the Podman container engine like done for the GPU server in the [sections above](#commands-to-execute-in-the-gpu-server).
 
 In the file /etc/ankaios/ank-agent.conf perform the following changes:
-- In the field name set "agent_client"
-- In the field server_url set "https://<SERVER_IP>:25551"
+- In the field `name` set "agent_client"
+- In the field `server_url` set "https://<SERVER_IP>:25551"
 
 ```
 sudo systemctl start ank-agent
 ```
+
 # Additional Ankaios commands
 
 ```
 ank get state // Retrieve information about the current Ankaios system
 ank get workload // Information about the worloads running in the Ankaios system
 ank get agent // Information about the Ankaios agents connected to the Ankaios server
+ank logs <workload_name> // Retrieve the logs from a workload
 ank help // Get the help
 ```
 
