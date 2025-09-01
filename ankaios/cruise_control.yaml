@@ -2,16 +2,33 @@ apiVersion: v0.1
 workloads:
   #carla:
   #  runtime: podman
-  #  agent: agent_server
+  #  agent: agent_A
   #  restartPolicy: ALWAYS
   #  runtimeConfig: |
   #    image: docker.io/carlasim/carla:latest
   #    commandOptions: ["--privileged", "--gpus", "all", "--net=host", "-v", "/tmp/.X11-unix:/tmp/.X11-unix:rw"]
   #    commandArgs: ["/bin/bash", "./CarlaUE4.sh", "-RenderOffScreen"]
-  zenoh_router:
+  #zenoh_router:
+  #  runtime: podman
+  #  agent: agent_A
+  #  restartPolicy: ALWAYS
+  #  runtimeConfig: |
+  #    image: docker.io/eclipse/zenoh:latest
+  #    commandOptions: ["--init", "--net=host"]
+  mqtt_broker:
     runtime: podman
-    agent: agent_server
+    agent: agent_A
     restartPolicy: ALWAYS
     runtimeConfig: |
-      image: docker.io/eclipse/zenoh:latest
-      commandOptions: ["--init", "--net=host"]
+      image: docker.io/library/eclipse-mosquitto:latest
+      commandOptions: ["-p", "1883:1883", "-v", "/home/rscosta/Documents/sdv_lab/ankaios/mosquitto/config:/mosquitto/config", "-v", "/home/rscosta/Documents/sdv_lab/ankaios/mosquitto/data:/mosquitto/data", "-v", "/home/rscosta/Documents/sdv_lab/ankaios/mosquitto/log:/mosquitto/log"]
+  #nginx:
+  #  runtime: podman
+  #  agent: agent_A
+  #  restartPolicy: ALWAYS
+  #  tags:
+  #    - key: owner
+  #      value: Ankaios team
+  #  runtimeConfig: |
+  #    image: docker.io/nginx:latest
+  #    commandOptions: ["-p", "8081:80"]
