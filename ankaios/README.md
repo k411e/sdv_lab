@@ -1,23 +1,25 @@
-[Eclipse Ankaios](https://eclipse-ankaios.github.io/ankaios/0.6) is an embedded software orchestrator targeted for automotive High Performance Computer (HPC) which suppports pluggable container runtimes. In the hackathon, Eclipse Ankaios with version v0.6.0 is used.
+The projec use the [Eclipse Ankaios](https://eclipse-ankaios.github.io/ankaios/0.6). This is an embedded software orchestrator targeted for automotive High Performance Computer (HPC) which suppports pluggable container runtimes. In the hackathon, Eclipse Ankaios with version v0.6.0 is used.
 
 Ankaios supports [Podman](https://docs.podman.io/en/latest/) as container runtime.
 
-To understand the next steps, please check out the [Eclipse Ankaios Architecture](https://eclipse-ankaios.github.io/ankaios/0.6/architecture).
+To understand the next steps, please view the architecture diagram in the folder architecture
 
 # Prerequisites
 
-- Any Linux or WSL2 on Windows
+- Two computers with Ubuntu versions 20.04, 22.04 or 24.04.
+- One computer with a dedicated GPU equivalent to an NVIDIA 2070 or better with at least 8Gb of VRAM Or more.
 
-Recommendation: Ubuntu-24.04 native or on WSL2
+# PC1 setup
 
-# Commands to execute in the GPU server
+## CARLA installation and execution
 
-## Prerequesites to run CARLA in a container
+### CARLA running in a container (requires NVIDIA graphics card)
 
-GPU server with NVIDIA graphics card\
-NVIDIA Container toolkit installed
+To run CARLA in a container is required the following:
+- NVIDIA graphics card
+- NVIDIA container toolkit installed
 
-The NVIDIA container toolkit can be installed with the commands below:
+The NVDIA container toolkit can be installed with the commands below:
 
 ```
 curl -fsSL https://nvidia.github.io/libnvidia-container/gpgkey | sudo gpg --dearmor -o /usr/share/keyrings/nvidia-container-toolkit-keyring.gpg \
@@ -34,6 +36,24 @@ export NVIDIA_CONTAINER_TOOLKIT_VERSION=1.17.8-1
       libnvidia-container-tools=${NVIDIA_CONTAINER_TOOLKIT_VERSION} \
       libnvidia-container1=${NVIDIA_CONTAINER_TOOLKIT_VERSION}
 ```
+
+In the file cruise_control.yaml the carla workload is commented, please uncomment it.
+
+### CARLA standalone
+
+Download CARLA from [GitHub Repository](https://github.com/carla-simulator/carla/releases/tag/0.9.15/)
+
+To run CARLA execute the commands below
+
+```
+cd path/to/carla/root
+./CarlaUE4.sh
+
+```
+
+For additional details please check the page [CARLA installation](https://carla.readthedocs.io/en/latest/start_quickstart/#carla-installation)
+
+
 
 ## Podman installation
 
@@ -70,6 +90,10 @@ When this command is executed the service ank-server will read the configuration
 sudo systemctl start ank-agent
 ```
 
+## MQTT broker
+
+The mqtt broker can be configured in the file /ankaios/mosquitto/mosquitto.conf
+
 ## Start the Cruise Control Demo Scenario
 
 To start the cruise control demo scenario, apply the following Ankaios manifest:
@@ -81,9 +105,9 @@ ank -k apply cruise_control.yaml
 **Note:** If you want to remove all workloads specified in the `cruise_control.yaml` you can simply add `-d` paramter to the `ank apply` like the following:
 `ank apply -d cruise_control.yaml`. This might be helpful for incremental development.
 
-# Commands to execute in the user computer
+# PC2 setup
 
-Install Eclipse Ankaios and the Podman container engine like done for the GPU server in the [sections above](#commands-to-execute-in-the-gpu-server).
+Install Eclipse Ankaios and the Podman container engine like done for [PC1 setup](#pc1-setup).
 
 In the file /etc/ankaios/ank-agent.conf perform the following changes:
 - In the field `name` set "agent_client"
