@@ -62,17 +62,17 @@ The installation script will automatically create a systemd service file for the
 sudo systemctl start ank-server
 ```
 
-When this command is executed the service ank-server will read the configurations in the file /etc/ankaios/ank-server.conf
+When this command is executed the service ank-server will read the configurations in the file `/etc/ankaios/ank-server.conf`.
  
 ## Run Ankaios agent
-
-In the file /etc/ankaios/ank-agent.conf in the field name set "agent_server"
 
 ```
 sudo systemctl start ank-agent
 ```
 
-## Apply Ankaios manifest to create the desired state
+## Start the Cruise Control Demo Scenario
+
+To start the cruise control demo scenario, apply the following Ankaios manifest:
 
 ```
 ank -k apply cruise_control.yaml
@@ -80,8 +80,6 @@ ank -k apply cruise_control.yaml
 
 **Note:** If you want to remove all workloads specified in the `cruise_control.yaml` you can simply add `-d` paramter to the `ank apply` like the following:
 `ank apply -d cruise_control.yaml`. This might be helpful for incremental development.
-
-**Note:**: Per default, Ankaios runs in insecure mode (no mTLS), so `ank-cli` requires `--insecure` (`-k`). To avoid typing `-k` each time, set `export ANK_INSECURE=true`.
 
 # Commands to execute in the user computer
 
