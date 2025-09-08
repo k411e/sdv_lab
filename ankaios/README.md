@@ -1,4 +1,4 @@
-The projec use the [Eclipse Ankaios](https://eclipse-ankaios.github.io/ankaios/0.6). This is an embedded software orchestrator targeted for automotive High Performance Computer (HPC) which suppports pluggable container runtimes. In the hackathon, Eclipse Ankaios with version v0.6.0 is used.
+The project uses [Eclipse Ankaios](https://eclipse-ankaios.github.io/ankaios/0.6). This is an embedded software orchestrator targeted for automotive High Performance Computer (HPC) which suppports pluggable container runtimes. In the hackathon, Eclipse Ankaios with version v0.6.0 is used.
 
 Ankaios supports [Podman](https://docs.podman.io/en/latest/) as container runtime.
 

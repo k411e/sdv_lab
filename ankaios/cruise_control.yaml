@@ -18,10 +18,15 @@ workloads:
   mqtt_broker:
     runtime: podman
     agent: agent_A
-    restartPolicy: ALWAYS
+    restartPolicy: NEVER
+    configs:
+      mqtt_conf: mqtt_config
+    files:
+      - mountPoint: /mosquitto/config/mosquitto.conf
+        data: "{{mqtt_conf}}"
     runtimeConfig: |
       image: docker.io/library/eclipse-mosquitto:latest
-      commandOptions: ["-p", "1883:1883", "-v", "/home/rscosta/Documents/sdv_lab/ankaios/mosquitto/config:/mosquitto/config", "-v", "/home/rscosta/Documents/sdv_lab/ankaios/mosquitto/data:/mosquitto/data", "-v", "/home/rscosta/Documents/sdv_lab/ankaios/mosquitto/log:/mosquitto/log"]
+      commandOptions: ["-p", "1883:1883", "-u", "mosquitto", "-v", "mosquitto_data:/mosquitto/data"]
   #nginx:
   #  runtime: podman
   #  agent: agent_A
@@ -32,3 +37,9 @@ workloads:
   #  runtimeConfig: |
   #    image: docker.io/nginx:latest
   #    commandOptions: ["-p", "8081:80"]
+configs:
+  mqtt_config: |
+    allow_anonymous true
+    listener 1883 0.0.0.0
+    persistence true
+    persistence_location /mosquitto/data/
