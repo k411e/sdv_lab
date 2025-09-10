@@ -1,7 +1,66 @@
-# sdv_lab
-Simulate a realistic, modular, and cyber-physical Software-Defined Vehicle (SDV) development environment where teams can design, implement, and demonstrate an SDV feature that operates across a virtual platform.
+# Zenoh Pub/Sub Docker Development Environment
 
-The architecture of the project is described in the file /architecture/Cruise_Control.svg.
+This repository contains a Dockerfile that sets up a development environment
+for testing the Zenoh Pub/Sub API with Python.
 
-In the file /ankaios/README.md is described how to setup the environment. 
+## Features
 
+- Based on Ubuntu 22.04 LTS
+- Python 3.10 and pip installed
+- Zenoh Pub/Sub API installed via `pip install eclipse-zenoh`
+- Example publisher and subscriber scripts included
+- Interactive shell by default
+- Ports exposed for Zenoh protocol (TCP/UDP) and REST API
+
+## Getting Started
+
+
+### Build the Docker Image
+
+From the root directory (where the Dockerfile is located), run:
+
+```bash
+docker build -t zenoh-dev-env .
+```
+
+### Run the Docker Container
+
+Start the container interactively amd expose ports:
+
+```bash
+docker run -it --rm --name zenoh-dev \ 
+ -p 7447:7447/tcp \
+ -p 8000:8000/tcp \
+  zenoh-dev-env
+```
+
+### Using the Zenoh Pub/Sub Examples
+
+Open two terminals
+
+Terminal 1:
+```bash
+docker exec -it zenoh-dev bash
+```
+```bash
+python3 examples/z_pub.py
+```
+Terminal 2:
+```bash
+docker exec -it zenoh-dev bash
+```
+
+```bash
+python3 examples/z_sub.py
+```
+
+### Cleanup
+
+to stop and remove the container:
+```bash
+docker stop zenoh-dev
+```
+
+```bash
+docker rm zenoh-dev
+```
