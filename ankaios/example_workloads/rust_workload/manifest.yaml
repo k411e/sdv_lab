@@ -1,6 +1,6 @@
 apiVersion: v0.1
 workloads:
-  example:
+  rust_workload:
     runtime: podman
     agent: agent_A
     controlInterfaceAccess:
@@ -10,4 +10,4 @@ workloads:
           filterMask:
             - "*"
     runtimeConfig: |
-      image: localhost/example_workload:0.1
+      image: localhost/example_rust_workload:0.1
