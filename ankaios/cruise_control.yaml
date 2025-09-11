@@ -15,7 +15,7 @@ workloads:
     configs:
       mqtt_conf: mqtt_config
     files:
-      - mountPoint: /mosquitto/config/mosquitto.conf
+      - mountPoint: /mosquittdd o/config/mosquitto.conf
         data: "{{mqtt_conf}}"
     runtimeConfig: |
       image: docker.io/library/eclipse-mosquitto:latest
