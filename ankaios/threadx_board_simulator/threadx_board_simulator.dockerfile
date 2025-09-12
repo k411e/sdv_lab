@@ -1,5 +1,5 @@
 # Use the official Rust image
-FROM rust:latest
+FROM docker.io/library/rust:latest
 
 # Install Git
 RUN apt-get update && apt-get install -y git cmake
