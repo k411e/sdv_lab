@@ -8,6 +8,14 @@ workloads:
   #    image: docker.io/carlasim/carla:latest
   #    commandOptions: ["--privileged", "--gpus", "all", "--net=host", "-v", "/tmp/.X11-unix:/tmp/.X11-unix:rw"]
   #    commandArgs: ["/bin/bash", "./CarlaUE4.sh", "-RenderOffScreen"]
+  
+  threadx_board_simulator:
+    runtime: podman
+    agent: agent_A
+    restartPolicy: NEVER
+    runtimeConfig: |
+      image: threadx-board-simulator:v1
+      commandOptions: ["--network", "host"]  
   mqtt_broker:
     runtime: podman
     agent: agent_A
@@ -19,14 +27,14 @@ workloads:
         data: "{{mqtt_conf}}"
     runtimeConfig: |
       image: docker.io/library/eclipse-mosquitto:latest
-      commandOptions: ["-p", "1883:1883", "-u", "mosquitto", "-v", "mosquitto_data:/mosquitto/data"]
+      commandOptions: ["--network", "host", "-u", "mosquitto", "-v", "mosquitto_data:/mosquitto/data"]
   ustreamer:
     runtime: podman
     agent: agent_A
     restartPolicy: NEVER
     runtimeConfig: |
       image: ghcr.io/eclipse-uprotocol/up-streamer-rust/configurable-streamer:main
-      commandOptions: ["-p", "7447:7447", "-e", "RUST_LOG=debug,zenoh=debug", "-v", "/home/rscosta/Documents/sdv_lab/ankaios/ustreamer:/app/config"]
+      commandOptions: ["--network", "host", "-e", "RUST_LOG=debug,zenoh=debug", "-v", "/home/rscosta/Documents/sdv_lab/ankaios/ustreamer:/app/config"]
 configs:
   mqtt_config: |
     allow_anonymous true
