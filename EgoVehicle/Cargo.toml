@@ -15,7 +15,7 @@
 #
 
 [package]
-name = "zenoh-vehicle"
+name = "ego-vehicle"
 version = "0.1.0"
 edition = "2024"
 
@@ -25,7 +25,11 @@ clap = { version = "4.5.4", features = ["derive"] }
 ctrlc = "3.4"
 log = "0.4"
 pretty_env_logger = "0.4"
+serde = { version = "1.0" }
+serde_json = { version = "1" }
 tokio = { version = "1", features = ["full"] }
+up-rust = { version = "0.7.0" }
+up-transport-zenoh = { version = "0.8" }
 zenoh = { version = "1.0.0-rc.2" }
 
 [patch.crates-io]
