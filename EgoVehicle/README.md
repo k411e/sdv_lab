@@ -4,15 +4,17 @@
 
 The simplest way to build and run the EgoVehicle is to use the included scripts.
 
-_Note_: It's assumed that Docker is installed.
+_Note_: It's assumed that `Podman` is installed.
 
-### Build the Docker container
+### Build for development
+
+For development, you might want to build often until your source code builds successfully.
 
 ```shell
-./build_docker_container.sh
+./build_container.sh
 ```
 
-### Enter the Docker container
+Next, enter the container.
 
 You'll want to start an ssh-agent, which key to use will depend:
 
@@ -23,7 +25,7 @@ ssh -T git@github.com       # should greet you on the host
 ```
 
 ```shell
-./enter_docker_container.sh
+./enter_container.sh
 ```
 
 Once inside of the docker container, you should be able to execute:
@@ -33,3 +35,32 @@ cargo build
 ```
 
 and it ought to build!
+
+Use this mechanism until you have ready application and your build runs successful.
+
+### Build for deployment
+
+After completing your development, run the EgoVehicle as workload using Eclipse Ankaios.
+
+```shell
+./build_container.sh PROD
+```
+
+Next, if there is any existing `ego_vehicle` workload running delete it to deploy the new version afterwards:
+
+```shell
+ank delete workload ego_vehicle
+```
+
+Now, apply the Ankaios manifest again to run the whole scenario with your new `ego_vehicle` version:
+
+```shell
+ank apply ../ankaios/cruise_control.yaml
+```
+
+Check the logs:
+
+```shell
+ank logs -f ego_vehicle
+```
+
