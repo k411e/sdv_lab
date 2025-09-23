@@ -11,7 +11,7 @@ _Note_: It's assumed that `Podman` is installed.
 For development, you might want to build often until your source code builds successfully.
 
 ```shell
-./build_container.sh
+./make_container.sh
 ```
 
 Next, enter the container.
@@ -43,7 +43,7 @@ Use this mechanism until you have ready application and your build runs successf
 After completing your development, run the EgoVehicle as workload using Eclipse Ankaios.
 
 ```shell
-./build_container.sh PROD
+./make_container.sh PROD
 ```
 
 Next, if there is any existing `ego_vehicle` workload running delete it to deploy the new version afterwards:
