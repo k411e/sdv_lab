@@ -1,5 +1,5 @@
 # Dockerfile
-FROM ubuntu:22.04
+FROM ubuntu:22.04 as DEV
 
 ENV DEBIAN_FRONTEND=noninteractive
 
@@ -77,6 +77,22 @@ RUN mkdir -p ~/.cargo && printf "[net]\ngit-fetch-with-cli = true\n" > ~/.cargo/
 RUN curl --proto '=https' --tlsv1.2 -sSf https://sh.rustup.rs \
     | sh -s -- -y --profile default --default-toolchain stable && \
     ~/.cargo/bin/rustup component add clippy rustfmt
-
+    
 # (optional) sanity checks
 # RUN rustc --version && cargo --version && clang-12 --version
+
+FROM DEV as COMPILE
+
+COPY . $WORKDIR
+RUN --mount=type=ssh,mode=0666 \
+    --mount=type=cache,target=/usr/local/cargo/registry \
+    --mount=type=cache,target=/usr/local/cargo/git \
+    cargo fetch
+
+RUN --mount=type=cache,target=${WORKDIR}/target/release \
+    cargo build --release
+
+FROM COMPILE as PROD
+ENV RUST_LOG=info
+ENTRYPOINT ["target/release/ego-vehicle"]
+
