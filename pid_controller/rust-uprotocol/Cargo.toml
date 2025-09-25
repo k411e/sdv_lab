@@ -34,5 +34,5 @@ name = "up_pub"
 path = "src/testing/uprotocol_pub.rs"
 
 [[bin]]
-name = "sim_pub"
+name = "simulator"
 path = "src/testing/simulator.rs"
