@@ -19,7 +19,7 @@ use std::collections::HashMap;
 use std::time::{SystemTime, UNIX_EPOCH};
 use serde::{Deserialize, Serialize};
 use serde_json;
-use log::{info, error};
+use log::{info, debug, error};
 use up_rust::{UUri, UListener, UMessage, UMessageBuilder, UTransport, UPayloadFormat};
 use up_transport_zenoh::UPTransportZenoh;
 
@@ -237,7 +237,7 @@ impl UProtocolHandler {
         if let Err(e) = transport.send(message).await {
             error!("Failed to publish acceleration: {}", e);
         } else {
-            info!("Publishing Acceleration: {}", actuation_cmd_payload);
+            debug!("Publishing Acceleration: {}", actuation_cmd_payload);
         }
 
         // Store results for later analysis
@@ -258,7 +258,7 @@ impl UProtocolHandler {
         };
         
         if delta_time > 0.0 {
-            info!("Delta time: {} seconds", delta_time);
+            debug!("Delta time: {} seconds", delta_time);
         }
     }
 
@@ -439,7 +439,7 @@ impl UListener for ClockListener {
                 let mut clock = self.current_time.lock().unwrap();
                 *clock = time_value;
             }
-            info!("Received current clock '{:.4}' seconds", time_value);
+            debug!("Received current clock '{:.4}' seconds", time_value);
         }
     }
 }
@@ -511,7 +511,7 @@ impl UListener for VelocityListener {
                 let mut vel = self.current_velocity.lock().unwrap();
                 *vel = velocity_value;
             }
-            info!("Received current velocity '{:.2}'", velocity_value);
+            debug!("Received current velocity '{:.2}'", velocity_value);
             
             // Trigger PID computation
             UProtocolHandler::publish_acc(

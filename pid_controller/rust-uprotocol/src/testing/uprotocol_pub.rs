@@ -16,12 +16,13 @@
 
 use std::str::FromStr;
 use std::sync::Arc;
+use serde::{Deserialize, Serialize};
+
 use clap::{Parser, Subcommand};
 use log::{info, error, warn};
-use serde::{Deserialize, Serialize};
-use up_rust::{UUri, UTransport, UMessageBuilder, UPayloadFormat};
-use up_transport_zenoh::UPTransportZenoh;
-use zenoh::config::{Config, EndPoint};
+use up_transport_zenoh::{UPTransportZenoh, zenoh_config};
+use up_rust::{UUri, UMessageBuilder, UTransport, UPayloadFormat};
+use zenoh::Config;
 
 #[derive(Parser, Debug)]
 #[clap(author, version, about = "uProtocol Publisher - Send messages to multiple URIs", long_about = None)]
@@ -158,26 +159,26 @@ fn parse_payload_format(format_str: &str) -> UPayloadFormat {
     }
 }
 
-async fn create_transport(endpoint: &str, authority: &str, entity_id: u32, version_major: u8) -> Result<Arc<dyn UTransport>, Box<dyn std::error::Error>> {
-    // Configure Zenoh
-    let mut zenoh_config = Config::default();
-    zenoh_config
-        .connect
-        .endpoints
-        .set(vec![
-            EndPoint::from_str(&format!("tcp/{}", endpoint)).expect("Unable to set endpoint"),
-        ])
-        .expect("Unable to set Zenoh Config");
+// Helper function to create a Zenoh configuration (copied from simulator.rs)
+fn get_zenoh_config(endpoint: &str) -> zenoh_config::Config {
+    let zenoh_string = format!("{{ mode: 'peer', connect: {{ endpoints: [ 'tcp/{}' ] }} }}", endpoint);
+    Config::from_json5(&zenoh_string).expect("Failed to load Zenoh config")
+}
 
+async fn create_transport(endpoint: &str, authority: &str, entity_id: u32, version_major: u8) -> Result<Arc<dyn UTransport>, Box<dyn std::error::Error>> {
     // Create publisher entity URI
     let publisher_uri = UUri::try_from_parts(authority, entity_id, version_major, 0)?;
     let publisher_uri_string: String = (&publisher_uri).into();
 
     info!("Initializing uProtocol transport with publisher URI: {}", publisher_uri_string);
 
-    // Initialize uProtocol transport with Zenoh
+    // Use the builder pattern like in simulator.rs
     let transport: Arc<dyn UTransport> = Arc::new(
-        UPTransportZenoh::new(zenoh_config, publisher_uri_string).await?
+        UPTransportZenoh::builder(authority)
+            .expect("invalid authority name")
+            .with_config(get_zenoh_config(endpoint))
+            .build()
+            .await?
     );
 
     Ok(transport)
