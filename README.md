@@ -3,33 +3,18 @@
 Simulate a realistic, modular, and cyber-physical Software-Defined Vehicle (SDV) development environment where teams can design, implement, and demonstrate an SDV feature that
 operates across a virtual platform.
 
-The challenge comes with a demo scenario, called the `Cruise Control`, running a cruise control ADAS application in the SDV Lab environment. Be creative and innovative and enhance the existing `Cruise Control` scenario or develop applications in the SDV Lab environment for your custom use case.
-
-## Cruise Control Scenario Architecture
-
-The architecture of the project is described in the file `architecture/Cruise_Control.svg`.
+The challenge comes with demo applications in the SDV Lab environment. Be creative and innovative and enhance the existing demo scenarios or develop applications in the SDV Lab environment for your custom use case.
 
 ## Prerequisites
 
-You will need two computers with Ubuntu versions 22.04 or 24.04. One for deploying the applications inside the SDV Lab and the other one for deploying the CARLA simulator. If you do not have a notebook supporing CARLA to run, get a notebook from the hack coache setup with CARLA already or connect to CARLA notebooks hosted in Porto using `tailscale` if you are in Berlin.
+- Linux Notebook Ubuntu 22.04/24.04 or WSL2 or a Linux VM
+- Shared Notebook per team that you will get from the hack coaches
 
 ## Installation
 
-### PC1
+### User Notebook
 
-#### CARLA
-
-Setup the notebook with CARLA or get one from the hack coaches.
-
-Download CARLA from [GitHub Repository](https://github.com/carla-simulator/carla/releases/tag/0.9.15/)
-
-For additional details please check the page [CARLA installation](https://carla.readthedocs.io/en/latest/start_quickstart/#carla-installation)
-
-#### Install the Android Cuttlefish IVI
-
-On the PC where CARLA is running, install the Android Cuttlefish IVI (`aaos_digital_cluster`).
-
-### PC2
+On your notebook you will use [Eclipse Ankaios](https://eclipse-ankaios.github.io/ankaios/0.6) as embedded software orchestrator to start containerized workloads for this challenge. The example applications you can run are also managed by Ankaios.
 
 #### Install Podman
 
@@ -54,13 +39,10 @@ Follow the `Setup with script` section and install the version Eclipse Ankaios [
 
 The installation script will automatically create a systemd service file for the Ankaios server and an Ankaios agent.
 
-We will use the systemd files as user service to start and stop Eclipse Ankaios, so copy the created systemd service files with the following commands:
+### Shared Notebook
 
-```shell
-mkdir -p ~/.config/systemd/user/
-cp /etc/systemd/system/ank-server.service ~/.config/systemd/user/ank-server.service
-cp /etc/systemd/system/ank-agent.service ~/.config/systemd/user/ank-agent.service
-```
+As an participant you can ignore this section. The shared notebooks were already setup and this is only linked to reinstall the services if the shared notebook has some troubles.
+Look into the detailed [shared_notebooks.md](./shared_notebooks.md) about how to install the shared services on the shared notebooks from the hack coaches.
 
 ## Run
 
@@ -71,42 +53,27 @@ Start the `cruise control` scenario by starting:
 - Eclipse Ankaios cluster on PC2
 - Applying the Ankaios manifest [cruise_control.yaml](./cruise_control.yaml)
 
-
-### Run CARLA
-
-```
-cd path/to/carla/root
-./CarlaUE4.sh
-
-```
-
-### Run AAOS Digital Cluster
-
-
-TODO!
-```shell
-```
-
-### Build the container images
-
-For the EgoVehicle like described in the [EgoVehicle/README.md](./EgoVehicle/README.md#build-for-deployment) (just one script call!).
-
 ### Run Ankaios
 
 ```shell
-systemctl --user status ank-server ank-agent
+sudo systemctl start ank-server ank-agent
 ```
 
-### Apply the cruise control manfiest
+### Apply the workload example manifest
+
+In each example workload folder you will find an Ankaios manifest which you can apply to your local running Ankaios cluster to start this example demo workload. Since the example workloads need to connect to services on the shared notebook, please find out the ip address of the shared notebook, connect your notebook to the Hack Wifi and replace remote address e.g. for MQTT broker to point to the external shared notebook NIC's ip address.
+
+Navigate to the example workload folder you want to run and apply the manifest, example:
 
 ```shell
-ank apply cruise_control.yaml
+cd uprotocol/cruise-control-app
+ank apply cruise-control-app.yaml
 ```
 
-**Note:** If you want to remove all workloads specified in the `cruise_control.yaml` you can simply add `-d` paramter to the `ank apply` like the following:
-`ank apply -d cruise_control.yaml`. This might be helpful for incremental development.
+**Note:** If you want to remove all workloads specified in the Ankaios manifest for cleaning up you can simply add `-d` paramter to the `ank apply` like the following:
+`ank apply -d cruise-control-app.yaml`. This might be helpful for incremental development, when you change the example code.
 
-#### Additional Ankaios commands
+## Additional Ankaios commands
 
 ```
 ank logs <workload_name> // Retrieve the logs from a workload
@@ -114,4 +81,6 @@ ank get state // Retrieve information about the current Ankaios system
 ank get workloads // Information about the worloads running in the Ankaios system
 ```
 
+## Workload starting other workloads
 
+Inside [ankaios/example_workloads/README.md](./ankaios/example_workloads/README.md) there are two example workloads, one using the Ankaios Python SDK and the other one using the Ankaios Rust SDK, both using the [Ankaios Control Interface](https://eclipse-ankaios.github.io/ankaios/0.6/reference/control-interface/) to instruct Ankaios as a workload to start dynamically other workloads. This is common in the SDV world since workloads do not have to run always. Workloads can start other workloads or you can manage the Ankaios cluster also from within a workload. If your specific use case in the SDV Lab needs such feature, you can start with the example workloads there as a template and adapt it for your needs.
