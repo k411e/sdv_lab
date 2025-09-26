@@ -1,0 +1,8 @@
+{
+  "broker": "localhost",
+  "port": 1883,
+  "keepalive": 60,
+  "topics": {
+    "vehicle_parameters": "vehicle/parameters"
+  }
+}
