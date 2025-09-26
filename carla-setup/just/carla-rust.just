@@ -3,11 +3,11 @@
 rust_host     := "ubuntu"
 rust_env      := "$HOME/.cargo/env"
 
-rust_dir      := "~"/main_temp/"carla-rust"
+rust_dir      := "~"/local_build/"carla-rust"
 rust_repo     := "https://github.com/jerry73204/carla-rust.git"
 rust_tag      := "master"
 rust_deps     := "libpng-dev libssl-dev pkg-config"
-rust_patch    := replace(rust_dir, "~/" + main_temp + "/", "") + ".patch"
+rust_patch    := replace(rust_dir, "~/" + local_build + "/", "") + ".patch"
 rust_build    := "cargo build --release"
 rust_lib      := rust_dir + "/target/release/libcarla.rlib"
 

@@ -2,7 +2,8 @@
 
 carla_repo          := "https://github.com/carla-simulator/carla.git"
 
-carla_source        := "~"/main_temp/"carla-src"
+local_build          := main_repo/"carla-setup/localBuild"
+carla_source        := "~"/local_build/"carla-src"
 carla_build         := carla_source/"Build"
 
 carla_release       := "0.9.15"

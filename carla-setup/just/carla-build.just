@@ -22,7 +22,7 @@ target_clang    := "CLANG_PATH=" + clang_target
 carla_src_dir   := "CARLA_DIR=" + carla_source
 
 source_deps     := clang_deps + "autoconf build-essential cmake g++-12 libtool ninja-build"
-source_patch    := replace(carla_source, "~/" + main_temp + "/", "") + ".patch"
+source_patch    := replace(carla_source, "~/" + local_build + "/", "") + ".patch"
 
 pip_list_user   := "/tmp/pip-list-user"
 
