@@ -24,7 +24,7 @@ use std::sync::atomic::{AtomicBool, Ordering};
 use std::time::Duration;
 use async_trait::async_trait;
 use std::{str::FromStr};
-use zenoh::{bytes::Encoding, key_expr::KeyExpr, Config};
+use zenoh::{key_expr::KeyExpr, Config};
 use up_rust::{LocalUriProvider, StaticUriProvider, UMessageBuilder, UPayloadFormat, UTransport,UListener, UMessage, UUri};
 use up_transport_zenoh::UPTransportZenoh;
 
@@ -307,7 +307,6 @@ async fn main() -> Result<(), Box<dyn std::error::Error>>{
     });
 
     let mut last_time: f64 = 0.0;
-    let attachment: Option<String> = None;
 
     // Main loop
     while running.load(Ordering::SeqCst) {
