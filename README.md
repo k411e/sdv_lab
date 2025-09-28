@@ -5,25 +5,57 @@
 Simulate a realistic, modular, and cyber-physical Software-Defined Vehicle (SDV) development environment where teams can design, implement, and demonstrate an SDV feature that
 operates across a virtual platform.
 
-SDV Lab is a collection of examples about how to use Eclipse projects and other Open Source projects, such as CARLA and Android, to rapidly develop realistic vehicle features, and then simulate and test them in a virtual envirionment.
+SDV Lab is a collection of examples about how to use Eclipse projects and other Open Source projects, such as CARLA and Android, to rapidly develop realistic vehicle features, and then simulate and test them in a virtual environment.
 
 ![SDV Lab](https://github.com/Eclipse-SDV-Hackathon-Chapter-Three/sdv_lab/blob/main/assets/sdv_lab.png)
 
 ## SDV Lab Framework
 
-The SDV Lab repository is organized in folders, where you can find simple examples of components connected to implement unique vehicle funtions. Inside the folders will you find README files with technical details about each example.
+The SDV Lab repository is organized in folders, where you can find simple examples of components connected to implement unique vehicle functions. Inside the folders will you find README files with technical details about each example.
 
-![SW Componenents samples](https://github.com/Eclipse-SDV-Hackathon-Chapter-Three/sdv_lab/blob/main/assets/SW_Components.png)
+![SW Components samples](https://github.com/Eclipse-SDV-Hackathon-Chapter-Three/sdv_lab/blob/main/assets/SW_Components.png)
 Each example is composed by 3 elements:
  - Software Component A: Usually CARLA or Android Automotive application (AAOS). This component will be deployed in the shared computers with GPU capabilities.
  - Software Component B: Application component developed in RUST or Python. This component can be developed and deployed in your own computer.
  - Communication Bus: Protocol channel where the message and signal between the 2 components will be exchanged. The following protocols are available: [uProtocol](https://github.com/eclipse-uprotocol), [MQTT5](https://github.com/eclipse-mosquitto/mosquitto) and [Zenoh](https://github.com/eclipse-zenoh/zenoh).
 
-All Application Components and protocols bridges or brokers are conteinerized and managed using [Ankaios](https://github.com/eclipse-ankaios/ankaios). It means that you are able to run each example using simple Ankaios commands, as it will be described in the following sections.
+All Application Components and protocols bridges or brokers are containerized and managed using [Ankaios](https://github.com/eclipse-ankaios/ankaios). It means that you are able to run each example using simple Ankaios commands, as it will be described in the following sections.
 
+### MQTT --- Android AAOS + Python App
+A Python-based MQTT implementation for publishing and subscribing to vehicle parameter data with intelligent Cruise Control status monitoring to an Android-based Panel Cluster.
 
+ - [Link](https://github.com/Eclipse-SDV-Hackathon-Chapter-Three/sdv_lab/tree/main/android_python)
+ - Run with Ankaios:
+  -- Load Android project ( android_python/android/digital-cluster-app ) with Android Studio
+  -- Run MQTT Publisher:
+```shell
+cd android_python/python
+ank apply mqtt-publisher.yaml
+```
+### RUST uProtocol --- Android AAOS + RUST App
+The example uses Eclipse uProtocol to periodically publish the current operational status (e.g. current speed, engine temperature) and to expose an API endpoint for setting the target speed.
 
-### Infrastructure
+ - [Link](https://github.com/Eclipse-SDV-Hackathon-Chapter-Three/sdv_lab/tree/add_rust_client_app/uprotocol/cruise-control-app)
+ - Run with Ankaios:
+  -- Load Android project ( TODO ) with Android Studio
+  -- Run RUST App:
+```shell
+cd uprotocol/cruise-control-app
+ank apply cruise-control-app.yaml
+```
+### CARLA Control & Sensors (uProtocol & Zenoh) --- RUST App + CARLA
+A collection of Rust-based ego vehicle controllers for CARLA simulation with different messaging protocols. This project provides three implementations for distributed vehicle control and monitoring in automotive software-defined vehicle (SDV) architectures.
+
+ - [Link](https://github.com/Eclipse-SDV-Hackathon-Chapter-Three/sdv_lab/tree/main/ego-vehicle)
+ - Run with Ankaios:
+```shell
+TODO
+```
+### ThreadX --- MQTT & uProtocol
+Several examples about how to implement MQTT and uProtocol in Rust based on MXAZ3166 board. 
+ - [Link](https://github.com/Eclipse-SDV-Hackathon-Chapter-Three/threadx-rust/tree/main)
+
+## Infrastructure
 
 For this event, each team will be provided with a dedicated Laptop (shared laptop) containing all the main SDV Lab components, which requires specific software and hardware configuration. Therefore, your main focus will be to develop applications to interact with those components.
 ![Infra](https://github.com/Eclipse-SDV-Hackathon-Chapter-Three/sdv_lab/blob/main/assets/infra.png)
@@ -75,7 +107,7 @@ Your project will be judged based on:
 1.  Choose your ADAS or AD feature.
 2.  Explore SDV Lab examples and Eclipse SDV Projects.
 3.  Design and Prototype your solution.
-4.  Create resonable documentation of your team project and be ready for the presentation.
+4.  Create reasonable documentation of your team project and be ready for the presentation.
 
 ### 🏁 Final Notes
 
@@ -148,7 +180,7 @@ cd uprotocol/cruise-control-app
 ank apply cruise-control-app.yaml
 ```
 
-**Note:** If you want to remove all workloads specified in the Ankaios manifest for cleaning up you can simply add `-d` paramter to the `ank apply` like the following:
+**Note:** If you want to remove all workloads specified in the Ankaios manifest for cleaning up you can simply add `-d` parameter to the `ank apply` like the following:
 `ank apply -d cruise-control-app.yaml`. This might be helpful for incremental development, when you change the example code.
 
 ## Additional Ankaios commands
@@ -162,3 +194,4 @@ ank get workloads // Information about the worloads running in the Ankaios syste
 ## Workload starting other workloads
 
 Inside [ankaios/example_workloads/README.md](./ankaios/example_workloads/README.md) there are two example workloads, one using the Ankaios Python SDK and the other one using the Ankaios Rust SDK, both using the [Ankaios Control Interface](https://eclipse-ankaios.github.io/ankaios/0.6/reference/control-interface/) to instruct Ankaios as a workload to start dynamically other workloads. This is common in the SDV world since workloads do not have to run always. Workloads can start other workloads or you can manage the Ankaios cluster also from within a workload. If your specific use case in the SDV Lab needs such feature, you can start with the example workloads there as a template and adapt it for your needs.
+
