@@ -1,0 +1,8 @@
+apiVersion: v0.1
+workloads:
+  mqtt-publisher:
+    runtime: podman
+    agent: agent_A
+    restartPolicy: NEVER
+    runtimeConfig: |
+      image: mqtt-publisher
