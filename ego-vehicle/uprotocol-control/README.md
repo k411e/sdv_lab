@@ -36,6 +36,7 @@ A Rust-based ego vehicle controller for CARLA simulation that uses both uProtoco
 
 - CARLA simulator running
 - Rust toolchain installed
+- Rust API (crate) built locally (refer to [CARLA Build](./../../carla-setup/README.md#carla-build) section at carla-setup/README.md)
 - Zenoh router (optional, for distributed setup)
 - uProtocol-compatible systems for automotive integration
 
