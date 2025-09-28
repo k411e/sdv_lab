@@ -739,7 +739,7 @@ def game_loop(args):
             (args.width, args.height),
             pygame.HWSURFACE | pygame.DOUBLEBUF)
 
-        key = "ego_vehicle/speed"
+        key = "vehicle/status/velocity_status"
         session = zenoh.open(zenoh.Config())
         hud = HUD(args.width, args.height, session, key)
         world = World(client.get_world(), hud, args)
