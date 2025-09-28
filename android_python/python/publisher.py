@@ -14,18 +14,40 @@ topic = config["topics"]["vehicle_parameters"]
 # Load payload from data.json file
 with open("data.json") as f:
     payload = json.load(f)
-print(f"Loaded payload from data.json")
+print("Loaded payload from data.json")
 
 # Create MQTT client
 client = mqtt.Client()
-
-# Connect to broker
 client.connect(broker, port, keepalive)
-
-# Publish the payload
 client.loop_start()  # Start network loop
-client.publish(topic, json.dumps(payload))
-print(f"Published to topic {topic}: {json.dumps(payload)}")
-time.sleep(1)  # Wait to ensure message is sent
-client.loop_stop()
-client.disconnect()
+
+# Variables for speed control
+speed = payload.get("Speed", 0)
+direction = 1  # 1 = increasing, -1 = decreasing
+
+try:
+    while True:
+        # Update speed
+        speed += 5 * direction
+
+        # Reverse direction if limits reached
+        if speed >= 100:
+            direction = -1
+        elif speed <= 0:
+            direction = 1
+
+        # Update payload
+        payload["Speed"] = speed
+
+        # Publish updated payload
+        client.publish(topic, json.dumps(payload))
+        print(f"Published Speed={speed} to {topic}")
+
+        time.sleep(1)  # Wait 1 second
+
+except KeyboardInterrupt:
+    print("\nStopped by user")
+
+finally:
+    client.loop_stop()
+    client.disconnect()

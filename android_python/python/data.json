@@ -8,7 +8,7 @@
   "RPM": 0.0,
   "Range": 320,
   "ShareLocation": false,
-  "Speed": 0,
+  "Speed": 50,
   "SpeedUnit": "km/h",
   "TemperatureUnit": 0,
   "TypeOfVehicle": 0
