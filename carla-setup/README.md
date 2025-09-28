@@ -154,8 +154,8 @@ just run-manual
 
 ### CARLA Build
 
-CARLA org provides APIs for C++ and Python, and in order to have a Rust, C++ bindings is used.
-In order to Carla API for Rust you first needs to build C++ API and then make the bindings for Rust.
+CARLA org provides APIs for C++ and Python, and in order to have a Rust API, C++ bindings needs to be used.
+That being said, in order to have a Carla API for Rust you first needs to build C++ API and then make the bindings for Rust, as can be seen next:
 
 #### Build CARLA API (C++)
 
