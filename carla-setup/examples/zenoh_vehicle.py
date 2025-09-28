@@ -64,11 +64,11 @@ class ZenohVehicle(object):
         self._session = zenoh.open(zenoh.Config())
 
         # Subscribers
-        self._actuation_subscriber = self._session.declare_subscriber('ego_vehicle/input/actuation', self._actuation_callback)
+        self._actuation_subscriber = self._session.declare_subscriber('control/command/actuation_cmd', self._actuation_callback)
 
         # Publishers
-        self._brake_publisher = self._session.declare_publisher('ego_vehicle/output/brake')
-        self._speed_publisher = self._session.declare_publisher('ego_vehicle/output/speed')
+        self._brake_publisher = self._session.declare_publisher('vehicle/status/braking_status')
+        self._speed_publisher = self._session.declare_publisher('vehicle/status/velocity_status')
 
         # Vehicle Control - PID
         self._actuation = self.MID_ACTUATION        # A scalar value to control the vehicle brake + throttle [-1.0, 1.0]. Default is 0.0.
@@ -86,7 +86,7 @@ class ZenohVehicle(object):
         self._speed = 0.0
 
     def _actuation_callback(self, sample):
-        if sample.kind == zenoh.SampleKind.PUT and sample.key_expr == 'ego_vehicle/input/actuation':
+        if sample.kind == zenoh.SampleKind.PUT and sample.key_expr == 'control/command/actuation_cmd':
             self._actuation = float(sample.payload.to_string())
 
     def get_actuation(self) -> tuple:
