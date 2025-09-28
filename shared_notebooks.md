@@ -1,14 +1,16 @@
+
 # Shared Notebook Installation
 
 This can be ignored for participants, since the shared notebooks should be already setup when the events starts. It is for internal documentation and in the case a shared notebook must be setup newly because of issues.
 
 ## Install CARLA
 
-TODO!
+Please follow the guideline for CARLA Setup: [Carla Quick Start](https://carla.readthedocs.io/en/latest/start_quickstart/)
+Be sure to use the version [0.9.15](https://github.com/carla-simulator/carla/releases/tag/0.9.15/)
 
 ## Install AAOS Digital Cluster
 
-TODO!
+Download the latest [Android Studio version](https://developer.android.com/studio)
 
 ## Install Eclipse Ankaios
 
