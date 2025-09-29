@@ -21,64 +21,89 @@ Each example is composed by 3 elements:
 
 All Application Components and protocols bridges or brokers are containerized and managed using [Ankaios](https://github.com/eclipse-ankaios/ankaios). It means that you are able to run each example using simple Ankaios commands, as it will be described in the following sections.
 
-### MQTT --- Android AAOS + Python App
-A Python-based MQTT implementation for publishing and subscribing to vehicle parameter data with intelligent Cruise Control status monitoring to an Android-based Panel Cluster.
-
- - [Link](https://github.com/Eclipse-SDV-Hackathon-Chapter-Three/sdv_lab/tree/main/android_python)
-
-#### Running the Example
- - Load Android project ( android_python/android/digital-cluster-app ) with Android Studio
- - In the **Shared PC** be sure that the MQTT Broker is running
- ```shell
-ank get workloads
-```
- - Then get the IP of the **Shared PC** to configure the remote application
- ```shell
-ifconfig
-```
- - Now in your computer, go to the project folder:
-```shell
-cd android_python/python
-```
- - And change the manifest file mqtt-python.yaml with the **Shared Computer IP address**, in the property **"broker"**, inside of **"python_mqtt_settings"**
-  - Finally apply and run the workload with Ankaios in your computer:
-```shell
-ank apply mqtt-publisher.yaml
-```
- - If everything went well, you should see the Speed gauge from Android application increasing in a step of 5 km/h until reach 100 km/h, then decreasing.
- 
-### RUST uProtocol --- Android AAOS + RUST App
-The example uses Eclipse uProtocol to periodically publish the current operational status (e.g. current speed, engine temperature) and to expose an API endpoint for setting the target speed.
-
- - [Link](https://github.com/Eclipse-SDV-Hackathon-Chapter-Three/sdv_lab/tree/add_rust_client_app/uprotocol/cruise-control-app)
- - Run with Ankaios:
-  -- Load Android project ( TODO ) with Android Studio
-  -- Run RUST App:
-```shell
-cd uprotocol/cruise-control-app
-ank apply cruise-control-app.yaml
-```
-### CARLA Control & Sensors (uProtocol & Zenoh) --- RUST App + CARLA
-A collection of Rust-based ego vehicle controllers for CARLA simulation with different messaging protocols. This project provides three implementations for distributed vehicle control and monitoring in automotive software-defined vehicle (SDV) architectures.
-
- - [Link](https://github.com/Eclipse-SDV-Hackathon-Chapter-Three/sdv_lab/tree/main/ego-vehicle)
- - Run with Ankaios:
-```shell
-TODO
-```
-### ThreadX --- MQTT & uProtocol
-Several examples about how to implement MQTT and uProtocol in Rust based on MXAZ3166 board. 
- - [Link](https://github.com/Eclipse-SDV-Hackathon-Chapter-Three/threadx-rust/tree/main)
-
 ## Infrastructure
 
 For this event, each team will be provided with a dedicated Laptop (shared laptop) containing all the main SDV Lab components, which requires specific software and hardware configuration. Therefore, your main focus will be to develop applications to interact with those components.
 ![Infra](https://github.com/Eclipse-SDV-Hackathon-Chapter-Three/sdv_lab/blob/main/assets/infra.png)
+
+Note that the Ankaios Architecture is based on 2 separate Nodes:
+
+ - One Node dedicated to the Shared PC with "static" applications, such as MQTT Broker and uStreamer and,
+ - Additional Nodes that will run in each User PC, where your application will be deployed.
+
+![Ankaios Architecture](https://github.com/Eclipse-SDV-Hackathon-Chapter-Three/sdv_lab/blob/main/assets/Ankaios%20Arch.png)
+
 Here is the list of applications provided by the Shared laptops:
  - CARLA Simulator 0.9.15
  - Android Studio
  - MQTT Mosquitto Broker
  - uStreamer (uProtocol)
+ 
+## MQTT Examples
+### 1) Android AAOS + Python App
+A Python-based MQTT implementation for publishing and subscribing to vehicle parameter data with intelligent Cruise Control status monitoring to an Android-based Panel Cluster.
+
+ - [Link](https://github.com/Eclipse-SDV-Hackathon-Chapter-Three/sdv_lab/tree/main/android_python)
+
+#### Running the Example
+ - Load Android project ( android_python/android/digital-cluster-app ) with Android Studio. Please follow the instructions of [shared_notebooks.md](https://github.com/Eclipse-SDV-Hackathon-Chapter-Three/sdv_lab/blob/main/shared_notebooks.md ) regarding Android Studio configuration.
+ 
+ - Follow the instructions in the [README.md](https://github.com/Eclipse-SDV-Hackathon-Chapter-Three/sdv_lab/blob/main/android_python/python/README.md) file for running Ankaios.
+ 
+ - If everything went well, you should see the Speed gauge from Android application increasing in a step of 5 km/h until reach 100 km/h, then decreasing.
+
+### 2) ThreadX --- MQTT & uProtocol
+
+Several examples about how to implement MQTT and uProtocol in Rust based on MXAZ3166 board. 
+ - [Link](https://github.com/Eclipse-SDV-Hackathon-Chapter-Three/threadx-rust/tree/main)
+
+#### Running the Example
+ - Load Android project ( android_treadx/android/digital-cluster-app ) with Android Studio. Please follow the instructions of [shared_notebooks.md](https://github.com/Eclipse-SDV-Hackathon-Chapter-Three/sdv_lab/blob/main/shared_notebooks.md ) regarding Android Studio configuration.
+
+
+ 
+## uProtocol Examples
+### 1) Rust PID Controller
+A real-time PID (Proportional-Integral-Derivative) controller system implemented in Rust, designed for velocity control applications using uProtocol over Zenoh middleware for distributed communication. The system implements cruise control functionality by computing acceleration commands to maintain desired vehicle speeds.
+
+ - [Link](https://github.com/Eclipse-SDV-Hackathon-Chapter-Three/sdv_lab/tree/main/pid_controller/rust-uprotocol)
+
+#### Running the Example
+Follow [README.md](https://github.com/Eclipse-SDV-Hackathon-Chapter-Three/sdv_lab/blob/main/pid_controller/rust-uprotocol/README.md) for all the instructions about how to run it using Ankaios.
+ 
+### 2) Android AAOS + Rust App
+The example uses Eclipse uProtocol to periodically publish the current operational status (e.g. current speed, engine temperature) and to expose an API endpoint for setting the target speed.
+
+ - [Link](https://github.com/Eclipse-SDV-Hackathon-Chapter-Three/sdv_lab/tree/add_rust_client_app/uprotocol/cruise-control-app)
+
+#### Running the Example
+ - Load Android project ( android_uprotocol/digital-cluster-app ) with Android Studio. Please follow the instructions of [shared_notebooks.md](https://github.com/Eclipse-SDV-Hackathon-Chapter-Three/sdv_lab/blob/main/shared_notebooks.md ) regarding Android Studio configuration.
+ 
+ - Run with Ankaios:
+```shell
+cd uprotocol/cruise-control-app
+ank apply cruise-control-app.yaml
+```
+### 3) CARLA Control & Sensors (uProtocol & Zenoh) --- Rust App + CARLA
+A collection of Rust-based ego vehicle controllers for CARLA simulation with different messaging protocols. This project provides three implementations for distributed vehicle control and monitoring in automotive software-defined vehicle (SDV) architectures.
+
+ - [Link](https://github.com/Eclipse-SDV-Hackathon-Chapter-Three/sdv_lab/tree/main/ego-vehicle)
+
+#### Running the Example
+```shell
+TODO
+```
+## Zenoh Examples
+### 1) Python PID Controller
+A real-time PID (Proportional-Integral-Derivative) controller system designed for velocity control applications, using Zenoh middleware for distributed communication. The system implements cruise control functionality by computing acceleration commands to maintain desired vehicle speeds.
+
+ - [Link](https://github.com/Eclipse-SDV-Hackathon-Chapter-Three/sdv_lab/tree/main/pid_controller/python-zenoh)
+ 
+#### Running the Example
+Follow [README.md](https://github.com/Eclipse-SDV-Hackathon-Chapter-Three/sdv_lab/blob/main/pid_controller/python-zenoh/README.md)
+
+
+
 
 ## SDV Lab - Challenge: Build Your Own ADAS or AD Feature
 
