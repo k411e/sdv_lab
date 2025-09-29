@@ -19,4 +19,4 @@ RUN useradd -ms /bin/bash appuser && chown -R appuser /app
 USER appuser
 
 # Change 'subscriber.py' to your script's filename if different
-CMD ["python3", "subscriber.py"]
+CMD ["python3", "-u", "subscriber.py"]
