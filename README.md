@@ -39,6 +39,74 @@ Here is the list of applications provided by the Shared laptops:
  - MQTT Mosquitto Broker
  - uStreamer (uProtocol)
  
+ ## Installation
+
+### User Notebook
+
+On your notebook you will use [Eclipse Ankaios](https://eclipse-ankaios.github.io/ankaios/0.6) as embedded software orchestrator to start containerized workloads for this challenge. The example applications you can run are also managed by Ankaios.
+
+#### Install Podman
+
+As [Eclipse Ankaios](https://eclipse-ankaios.github.io/ankaios/0.6) as embedded software orchestrator is used to manage workloads inside the SDV Lab Challenge, you will need to install [Podman](https://docs.podman.io/en/latest/) as a container engine.
+
+You can install Podman easily with the package manager like in Ubuntu:
+
+```
+sudo apt-get update
+sudo apt-get -y install podman
+```
+
+Otherwise follow the official [Podman installation instructions](https://podman.io/docs/installation#installing-on-linux).
+
+#### Install Eclipse Ankaios
+
+Install [Eclipse Ankaios](https://eclipse-ankaios.github.io/ankaios/0.6) with a single curl according to the [Ankaios installation guide](https://eclipse-ankaios.github.io/ankaios/latest/usage/installation).
+
+Follow the `Setup with script` section and install the version Eclipse Ankaios [v0.6.0](https://github.com/eclipse-ankaios/ankaios/releases/tag/v0.6.0).
+
+**Note:** When using Ubuntu-24.04 disable AppArmor like described in the Ankaios installation guide.
+
+The installation script will automatically create a systemd service file for the Ankaios server and an Ankaios agent.
+
+### Shared Notebook
+
+As an participant you can ignore this section. The shared notebooks were already setup and this is only linked to reinstall the services if the shared notebook has some troubles.
+Look into the detailed [shared_notebooks.md](./shared_notebooks.md) about how to install the shared services on the shared notebooks from the hack coaches.
+
+## Run
+
+### Run Ankaios
+
+```shell
+sudo systemctl start ank-server ank-agent
+```
+
+### Apply the workload example manifest
+
+In each example workload folder you will find an Ankaios manifest which you can apply to your local running Ankaios cluster to start this example demo workload. Since the example workloads need to connect to services on the shared notebook, please find out the ip address of the shared notebook, connect your notebook to the Hack Wifi and replace remote address e.g. for MQTT broker to point to the external shared notebook NIC's ip address.
+
+Navigate to the example workload folder you want to run and apply the manifest, example:
+
+```shell
+cd uprotocol/cruise-control-app
+ank apply cruise-control-app.yaml
+```
+
+**Note:** If you want to remove all workloads specified in the Ankaios manifest for cleaning up you can simply add `-d` parameter to the `ank apply` like the following:
+`ank apply -d cruise-control-app.yaml`. This might be helpful for incremental development, when you change the example code.
+
+## Additional Ankaios commands
+
+```
+ank logs <workload_name> // Retrieve the logs from a workload
+ank get state // Retrieve information about the current Ankaios system
+ank get workloads // Information about the worloads running in the Ankaios system
+```
+
+## Workload starting other workloads
+
+Inside [ankaios/example_workloads/README.md](./ankaios/example_workloads/README.md) there are two example workloads, one using the Ankaios Python SDK and the other one using the Ankaios Rust SDK, both using the [Ankaios Control Interface](https://eclipse-ankaios.github.io/ankaios/0.6/reference/control-interface/) to instruct Ankaios as a workload to start dynamically other workloads. This is common in the SDV world since workloads do not have to run always. Workloads can start other workloads or you can manage the Ankaios cluster also from within a workload. If your specific use case in the SDV Lab needs such feature, you can start with the example workloads there as a template and adapt it for your needs.
+
 ## MQTT Examples
 ### 1) Android AAOS + Python App
 A Python-based MQTT implementation for publishing and subscribing to vehicle parameter data with intelligent Cruise Control status monitoring to an Android-based Panel Cluster.
@@ -52,15 +120,15 @@ A Python-based MQTT implementation for publishing and subscribing to vehicle par
  
  - If everything went well, you should see the Speed gauge from Android application increasing in a step of 5 km/h until reach 100 km/h, then decreasing.
 
-### 2) ThreadX --- MQTT & uProtocol
+### 2) ThreadX
 
 Several examples about how to implement MQTT and uProtocol in Rust based on MXAZ3166 board. 
- - [Link](https://github.com/Eclipse-SDV-Hackathon-Chapter-Three/threadx-rust/tree/main)
+ - [Link](https://github.com/Eclipse-SDV-Hackathon-Chapter-Three/sdv_lab/tree/main/android_treadx/threadx)
 
 #### Running the Example
- - Load Android project ( android_treadx/android/digital-cluster-app ) with Android Studio. Please follow the instructions of [shared_notebooks.md](https://github.com/Eclipse-SDV-Hackathon-Chapter-Three/sdv_lab/blob/main/shared_notebooks.md ) regarding Android Studio configuration.
+ - Load Android project (  android_treadx/android/digital-cluster-app ) with Android Studio. Please follow the instructions of [shared_notebooks.md](https://github.com/Eclipse-SDV-Hackathon-Chapter-Three/sdv_lab/blob/main/shared_notebooks.md ) regarding Android Studio configuration.
 
-
+- Follow the [Quick Start guideline](https://github.com/Eclipse-SDV-Hackathon-Chapter-Three/sdv_lab/blob/main/android_treadx/threadx/README.md) to build and run ThreadX example.
  
 ## uProtocol Examples
 ### 1) Rust PID Controller
@@ -79,9 +147,16 @@ The example uses Eclipse uProtocol to periodically publish the current operation
 #### Running the Example
  - Load Android project ( android_uprotocol/digital-cluster-app ) with Android Studio. Please follow the instructions of [shared_notebooks.md](https://github.com/Eclipse-SDV-Hackathon-Chapter-Three/sdv_lab/blob/main/shared_notebooks.md ) regarding Android Studio configuration.
  
+ - Go the project folder:
+
+ ```shell
+cd uprotocol/cruise-control-app
+```
+
+ - Change the manifest file commandOptions with the Shared PC IP address for the MQTT broker (MQTT_BROKER_URI=mqtt://[MQTT IP]:1883)
+
  - Run with Ankaios:
 ```shell
-cd uprotocol/cruise-control-app
 ank apply cruise-control-app.yaml
 ```
 ### 3) CARLA Control & Sensors (uProtocol & Zenoh) --- Rust App + CARLA
@@ -89,10 +164,6 @@ A collection of Rust-based ego vehicle controllers for CARLA simulation with dif
 
  - [Link](https://github.com/Eclipse-SDV-Hackathon-Chapter-Three/sdv_lab/tree/main/ego-vehicle)
 
-#### Running the Example
-```shell
-TODO
-```
 ## Zenoh Examples
 ### 1) Python PID Controller
 A real-time PID (Proportional-Integral-Derivative) controller system designed for velocity control applications, using Zenoh middleware for distributed communication. The system implements cruise control functionality by computing acceleration commands to maintain desired vehicle speeds.
@@ -101,9 +172,6 @@ A real-time PID (Proportional-Integral-Derivative) controller system designed fo
  
 #### Running the Example
 Follow [README.md](https://github.com/Eclipse-SDV-Hackathon-Chapter-Three/sdv_lab/blob/main/pid_controller/python-zenoh/README.md)
-
-
-
 
 ## SDV Lab - Challenge: Build Your Own ADAS or AD Feature
 
@@ -160,79 +228,7 @@ Your project will be judged based on:
 - Linux Notebook Ubuntu 22.04/24.04 or WSL2 or a Linux VM
 - Shared Notebook per team that you will get from the hack coaches
 
-## Installation
 
-### User Notebook
 
-On your notebook you will use [Eclipse Ankaios](https://eclipse-ankaios.github.io/ankaios/0.6) as embedded software orchestrator to start containerized workloads for this challenge. The example applications you can run are also managed by Ankaios.
-
-#### Install Podman
-
-As [Eclipse Ankaios](https://eclipse-ankaios.github.io/ankaios/0.6) as embedded software orchestrator is used to manage workloads inside the SDV Lab Challenge, you will need to install [Podman](https://docs.podman.io/en/latest/) as a container engine.
-
-You can install Podman easily with the package manager like in Ubuntu:
-
-```
-sudo apt-get update
-sudo apt-get -y install podman
-```
-
-Otherwise follow the official [Podman installation instructions](https://podman.io/docs/installation#installing-on-linux).
-
-#### Install Eclipse Ankaios
-
-Install [Eclipse Ankaios](https://eclipse-ankaios.github.io/ankaios/0.6) with a single curl according to the [Ankaios installation guide](https://eclipse-ankaios.github.io/ankaios/latest/usage/installation).
-
-Follow the `Setup with script` section and install the version Eclipse Ankaios [v0.6.0](https://github.com/eclipse-ankaios/ankaios/releases/tag/v0.6.0).
-
-**Note:** When using Ubuntu-24.04 disable AppArmor like discribed in the Ankaios installation guide.
-
-The installation script will automatically create a systemd service file for the Ankaios server and an Ankaios agent.
-
-### Shared Notebook
-
-As an participant you can ignore this section. The shared notebooks were already setup and this is only linked to reinstall the services if the shared notebook has some troubles.
-Look into the detailed [shared_notebooks.md](./shared_notebooks.md) about how to install the shared services on the shared notebooks from the hack coaches.
-
-## Run
-
-Start the `cruise control` scenario by starting:
-
-- CARLA on PC1
-- AAOS Digital Cluster (Android Cuttlefish IVI) on PC1
-- Eclipse Ankaios cluster on PC2
-- Applying the Ankaios manifest [cruise_control.yaml](./cruise_control.yaml)
-
-### Run Ankaios
-
-```shell
-sudo systemctl start ank-server ank-agent
-```
-
-### Apply the workload example manifest
-
-In each example workload folder you will find an Ankaios manifest which you can apply to your local running Ankaios cluster to start this example demo workload. Since the example workloads need to connect to services on the shared notebook, please find out the ip address of the shared notebook, connect your notebook to the Hack Wifi and replace remote address e.g. for MQTT broker to point to the external shared notebook NIC's ip address.
-
-Navigate to the example workload folder you want to run and apply the manifest, example:
-
-```shell
-cd uprotocol/cruise-control-app
-ank apply cruise-control-app.yaml
-```
-
-**Note:** If you want to remove all workloads specified in the Ankaios manifest for cleaning up you can simply add `-d` parameter to the `ank apply` like the following:
-`ank apply -d cruise-control-app.yaml`. This might be helpful for incremental development, when you change the example code.
-
-## Additional Ankaios commands
-
-```
-ank logs <workload_name> // Retrieve the logs from a workload
-ank get state // Retrieve information about the current Ankaios system
-ank get workloads // Information about the worloads running in the Ankaios system
-```
-
-## Workload starting other workloads
-
-Inside [ankaios/example_workloads/README.md](./ankaios/example_workloads/README.md) there are two example workloads, one using the Ankaios Python SDK and the other one using the Ankaios Rust SDK, both using the [Ankaios Control Interface](https://eclipse-ankaios.github.io/ankaios/0.6/reference/control-interface/) to instruct Ankaios as a workload to start dynamically other workloads. This is common in the SDV world since workloads do not have to run always. Workloads can start other workloads or you can manage the Ankaios cluster also from within a workload. If your specific use case in the SDV Lab needs such feature, you can start with the example workloads there as a template and adapt it for your needs.
 
 
