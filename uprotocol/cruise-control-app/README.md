@@ -37,7 +37,7 @@ This will enable log statements regarding the sending of status messages.
 ## 🎯 Run
 
 1. Make sure your MQTT broker is running on the shared notebook (`ank get workloads` on the shared notebook) and your notebook has connection to the shared notebook.
-2. Change the manifest file commandOptions with the Shared PC IP address for the MQTT broker
+2. Change the manifest file commandOptions with the Shared PC IP address for the MQTT broker (MQTT_BROKER_URI=mqtt://[MQTT IP]:1883)
 3. Apply the Ankaios manifest to start the demo applications:
 ```shell
 ank apply cruise-control-app.yaml
