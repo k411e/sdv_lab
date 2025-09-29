@@ -8,9 +8,54 @@ This can be ignored for participants, since the shared notebooks should be alrea
 Please follow the guideline for CARLA Setup: [Carla Quick Start](https://carla.readthedocs.io/en/latest/start_quickstart/)
 Be sure to use the version [0.9.15](https://github.com/carla-simulator/carla/releases/tag/0.9.15/)
 
-## Install AAOS Digital Cluster
+## Install AAOS Digital Cluster and Sync the Project
 
-Download the latest [Android Studio version](https://developer.android.com/studio)
+### Install Android Studio
+
+Start by downloading and installing the latest version of Android Studio:
+
+🔗 [Download Android Studio](https://developer.android.com/studio)
+
+Make sure the following components are also set up:
+- Android SDK properly configured
+- Git installed
+- Access to the project source code
+- A physical device or emulator available for testing
+
+---
+
+### Sync the Project
+
+Once the project is open in Android Studio:
+
+- Navigate to **File > Sync Project with Gradle Files**
+- Wait for Gradle to resolve dependencies and build the project
+
+This step ensures your environment is correctly configured and ready for development.
+
+---
+
+### Create a Virtual Device (Emulator)
+
+If you don’t have access to a physical device, you can create an emulator to test the app:
+
+1. Go to **Tools > Device Manager**
+2. Click **Create Device**
+3. Select a device model (e.g., Pixel Tablet) and click **Next**
+4. Choose a system image (e.g., Android 15) and download it if needed
+5. Click **Finish** to create the virtual device
+6. Launch the emulator by clicking the **Play** icon next to the device
+
+---
+
+### Run the Application
+
+With your device ready:
+
+- Select the emulator or connected physical device from the device dropdown
+- Click the **Run** button (▶️) or press `Shift + F10`
+- The app will build and launch on the selected device
+
 
 ## Install Eclipse Ankaios
 
