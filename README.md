@@ -25,13 +25,28 @@ All Application Components and protocols bridges or brokers are containerized an
 A Python-based MQTT implementation for publishing and subscribing to vehicle parameter data with intelligent Cruise Control status monitoring to an Android-based Panel Cluster.
 
  - [Link](https://github.com/Eclipse-SDV-Hackathon-Chapter-Three/sdv_lab/tree/main/android_python)
- - Run with Ankaios:
-  -- Load Android project ( android_python/android/digital-cluster-app ) with Android Studio
-  -- Run MQTT Publisher:
+
+#### Running the Example
+ - Load Android project ( android_python/android/digital-cluster-app ) with Android Studio
+ - In the **Shared PC** be sure that the MQTT Broker is running
+ ```shell
+ank get workloads
+```
+ - Then get the IP of the **Shared PC** to configure the remote application
+ ```shell
+ifconfig
+```
+ - Now in your computer, go to the project folder:
 ```shell
 cd android_python/python
+```
+ - And change the manifest file mqtt-python.yaml with the **Shared Computer IP address**, in the property **"broker"**, inside of **"python_mqtt_settings"**
+  - Finally apply and run the workload with Ankaios in your computer:
+```shell
 ank apply mqtt-publisher.yaml
 ```
+ - If everything went well, you should see the Speed gauge from Android application increasing in a step of 5 km/h until reach 100 km/h, then decreasing.
+ 
 ### RUST uProtocol --- Android AAOS + RUST App
 The example uses Eclipse uProtocol to periodically publish the current operational status (e.g. current speed, engine temperature) and to expose an API endpoint for setting the target speed.
 
@@ -194,4 +209,5 @@ ank get workloads // Information about the worloads running in the Ankaios syste
 ## Workload starting other workloads
 
 Inside [ankaios/example_workloads/README.md](./ankaios/example_workloads/README.md) there are two example workloads, one using the Ankaios Python SDK and the other one using the Ankaios Rust SDK, both using the [Ankaios Control Interface](https://eclipse-ankaios.github.io/ankaios/0.6/reference/control-interface/) to instruct Ankaios as a workload to start dynamically other workloads. This is common in the SDV world since workloads do not have to run always. Workloads can start other workloads or you can manage the Ankaios cluster also from within a workload. If your specific use case in the SDV Lab needs such feature, you can start with the example workloads there as a template and adapt it for your needs.
+
 
