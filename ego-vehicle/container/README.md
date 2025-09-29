@@ -55,7 +55,7 @@ ank delete workload ego_vehicle
 Now, apply the Ankaios manifest again to run the whole scenario with your new `ego_vehicle` version:
 
 ```shell
-ank apply ../ankaios/cruise_control.yaml
+ank apply ego-vehicle.yaml
 ```
 
 Check the logs:

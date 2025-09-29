@@ -2,6 +2,55 @@
 
 A real-time PID (Proportional-Integral-Derivative) controller system implemented in Rust, designed for velocity control applications using uProtocol over Zenoh middleware for distributed communication. The system implements cruise control functionality by computing acceleration commands to maintain desired vehicle speeds.
 
+## Run with Eclipse Ankaios
+
+You will use [Eclipse Ankaios](https://eclipse-ankaios.github.io/ankaios/0.6) to run the prebuilt containerized example applications.
+
+### Prerequisites
+
+- [Eclipse Ankaios v0.6.0](https://eclipse-ankaios.github.io/ankaios/0.6/usage/installation/) installed like described [here](../../README.md#install-eclipse-ankaios)
+- [Podman](https://podman.io/docs/installation) installed like described [here](../../README.md#install-podman)
+
+### Run
+
+The Ankaios manifest [rust-uprotocol.yaml](./rust-uprotocol.yaml) contains all the configuration of the example applications including the prebuilt container images.
+
+After installing Eclipse Ankaios, you can start the example apps with just applying the Ankaios manifest:
+
+```shell
+ank apply rust-uprotocol.yaml
+```
+
+Next, check the logs of the controller:
+
+```shell
+ank logs -f rust-uprotocol-controller
+```
+
+and also for the simulator:
+
+```shell
+ank logs -f rust-uprotocol-simulator
+```
+
+### Build container image after code changes
+
+You can change the example code or re-use it to build your custom applications in the SDV Lab.
+
+After your code changes, rebuild the container images locally, e.g. for the `rust-uprotocol-controller`:
+
+```shell
+sudo podman build -t pid-rust-uprotocol-controller .
+```
+
+Do the same for the simulator with adapting the image name accordingly.
+
+Afterwards you need to replace the public demo container image (e.g. `ghcr.io/eclipse-sdv-hackathon-chapter-three/sdv-lab/pid-rust-uprotocol-controller:latest`) with your custom one (e.g. `custom_uprotocol_controller`) in the Ankaios manifest [rust-uprotocol.yaml](./rust-uprotocol.yaml) for the specific workload. You can use the existing `Dockerfile` for building.
+
+For a final demo and container image, consider uploading to `ghcr.io/eclipse-sdv-hackathon-chapter-three/sdv-lab/pid-rust-uprotocol-controller:<team_name>-<version>`, so that someone who want to try out your final setup does not need to build container images. Replace the `team_name` with your hack team's name and append a version (`0.1`). Replace the existing images with your final ones in the Ankaios manifest [rust-uprotocol.yaml](./rust-uprotocol.yaml).
+
+You can also develop the app with the instructions below and afterwards containerize it and build the containers.
+
 ## Features
 
 - **Real-time PID Control**: Classical PID algorithm with configurable gains (Kp, Ki, Kd)

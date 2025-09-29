@@ -75,6 +75,9 @@ Look into the detailed [shared_notebooks.md](./shared_notebooks.md) about how to
 
 ## Run
 
+1. Start the required services on the shared notebook (CARLA, Ankaios cluster with communication service like MQTT, ...)
+2. Run your applications using Ankaios on your notebook
+
 ### Run Ankaios
 
 ```shell
