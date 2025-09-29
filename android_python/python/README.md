@@ -109,6 +109,10 @@ Received message on vehicle/parameters: {
   ...
 }
 ```
+6. Delete the example workloads
+```shell
+ank apply -d mqtt-python.yaml
+```
 
 ## Change and build example code
 
