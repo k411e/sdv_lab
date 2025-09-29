@@ -129,7 +129,7 @@ Start the `cruise control` scenario by starting:
 - CARLA on PC1
 - AAOS Digital Cluster (Android Cuttlefish IVI) on PC1
 - Eclipse Ankaios cluster on PC2
-- Applying the Ankaios manifest [cruise_control.yaml](./cruise_control.yaml)
+- Applying the Ankaios manifest [base-manifest.yaml](./base-manifest.yaml)
 
 ### Run Ankaios
 
