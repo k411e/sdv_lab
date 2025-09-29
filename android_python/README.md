@@ -12,8 +12,9 @@ The system consists of three main components:
 
 3. Subscriber Script (subscriber.py) - Listens for control commands from the Android application (like cruise control activation) and processes them.
 
-
 ## Communication Flow
+
+```
 
 ┌─────────────────┐      MQTT Broker      ┌─────────────────┐
 │                 │         Topic:         │                 │
@@ -33,7 +34,7 @@ The system consists of three main components:
 │   Controller)   │                        │  Cluster)       │
 │                 │                        │                 │
 └─────────────────┘                        └─────────────────┘
-
+```
 
 ## Data Format
 
