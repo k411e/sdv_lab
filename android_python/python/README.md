@@ -6,36 +6,15 @@ A Python-based MQTT implementation for publishing and subscribing to vehicle par
 
 - **JSON Data Exchange**: Publisher sends structured vehicle data, subscriber parses and displays it
 - **CruiseControl Monitoring**: Smart detection and notification of CruiseControl state changes
-- **Modular Configuration**: All settings centralized in `mqtt_config.json`
+- **Modular Configuration**: All settings centralized in the Ankaios manifest [mqtt-python.yaml](./mqtt-python.yaml)
 - **Error Handling**: Robust JSON parsing with graceful error handling
 - **Real-time Communication**: Continuous listening and publishing capabilities
 
 ## 📋 Prerequisites
 
-1. **Python 3.x** installed on your system
-2. **MQTT Broker** (e.g., [Mosquitto](https://mosquitto.org/))
-3. **Required Python packages** (see Installation section)
-
-## 🛠️ Installation
-
-1. **Install dependencies**:
-   ```bash
-   pip install -r requirements.txt
-   ```
-
-2. **Set up MQTT Broker** (Mosquitto example):
-   ```bash
-   # Ubuntu/Debian
-   sudo apt install mosquitto
-   sudo systemctl enable mosquitto
-   sudo systemctl start mosquitto
-   
-   # Windows (using Chocolatey)
-   choco install mosquitto
-   
-   # macOS (using Homebrew)
-   brew install mosquitto
-   ```
+- [Eclipse Ankaios v0.6.0](https://eclipse-ankaios.github.io/ankaios/0.6/usage/installation/) installed like described [here](../../README.md#install-eclipse-ankaios)
+- [Podman](https://podman.io/docs/installation) installed like described [here](../../README.md#install-podman)
+- Shared notebook hosting the eclipse mosquitto mqtt broker
 
 ## 📁 Project Structure
 
@@ -51,7 +30,7 @@ PythonMQTT/
 
 ## ⚙️ Configuration
 
-The `mqtt_config.json` file contains all MQTT settings:
+The mqtt settings are included in the Ankaios manifest [mqtt-python.yaml](./mqtt-python.yaml).
 
 ```json
 {
@@ -63,6 +42,8 @@ The `mqtt_config.json` file contains all MQTT settings:
   }
 }
 ```
+
+The mqtt broker used by the subsciber and publisher is running on the shared notebook. You must find out the external IP address of the shared notebook and replace `localhost` with its ip address.
 
 ### Configuration Fields
 
@@ -95,28 +76,29 @@ The publisher sends JSON data with the following structure:
 }
 ```
 
-## 🎯 Usage
+The data format is included in the Ankaios manifest [mqtt-python.yaml](./mqtt-python.yaml) and used by the MQTT publisher and subscriber.
 
-### 1. Start the MQTT Broker
+## 🎯 Run
 
-Make sure your MQTT broker is running:
-
-```bash
-# Check if Mosquitto is running
-sudo systemctl status mosquitto
-
-# Start if not running
-sudo systemctl start mosquitto
+1. Make sure your MQTT broker is running on the shared notebook (`ank get workloads` on the shared notebook) and your notebook has connection to the shared notebook.
+2. Replace the `localhost` in the MQTT config with the ip address of the shared notebook.
+3. Apply the Ankaios manifest to start the demo applications:
+```shell
+ank apply mqtt-python.yaml
+```
+4. Verify the logs of the publisher:
+```shell
+ank logs -f mqtt-publisher
+```
+**Expected Output**:
+```
+Published to topic vehicle/parameters: {"AmbientTemperature": 22, "Battery": 80, ...}
 ```
 
-### 2. Run the Subscriber
-
-Start the subscriber to listen for messages:
-
-```bash
-python subscriber.py
+5. Verify the logs of the subscriber:
+```shell
+ank logs -f mqtt-subscriber
 ```
-
 **Expected Output**:
 ```
 Subscribed to topic: vehicle/parameters
@@ -127,19 +109,23 @@ Received message on vehicle/parameters: {
   ...
 }
 ```
-
-### 3. Run the Publisher
-
-In a separate terminal, run the publisher:
-
-```bash
-python publisher.py
+6. Delete the example workloads
+```shell
+ank apply -d mqtt-python.yaml
 ```
 
-**Expected Output**:
+## Change and build example code
+
+The applications are a good starting point. You can enhance the existing code or create new workloads.
+All applications managed by Eclipse Ankaios must be containerized. If you change a line of code you must rebuild the container image for that app with:
+
+```shell
+sudo podman build -t custom_mqtt_publisher -f Dockerfile.publisher .
 ```
-Published to topic vehicle/parameters: {"AmbientTemperature": 22, "Battery": 80, ...}
-```
+
+Afterwards you need to replace the public demo container image (e.g. `ghcr.io/eclipse-sdv-hackathon-chapter-three/sdv-lab/mqtt-publisher:latest`) with your custom one (e.g. `custom_mqtt_publisher`) in the Ankaios manifest [mqtt-python.yaml](./mqtt-python.yaml) for the specific workload. You can use the existing `Dockerfile` for building.
+
+For a final demo and container image, consider uploading to `ghcr.io/eclipse-sdv-hackathon-chapter-three/sdv-lab/mqtt-subscriber:<team_name>-<version>`, so that someone who want to try out your final setup does not need to build container images. Replace the `team_name` with your hack team's name and append a version (`0.1`). Replace the existing images with your final ones in the Ankaios manifest [mqtt-python.yaml](./mqtt-python.yaml).
 
 ## 🎛️ CruiseControl Monitoring
 
@@ -163,7 +149,7 @@ Cruise Control deactivated.
 
 ### Adding More Topics
 
-Edit `mqtt_config.json` to add additional topics:
+Edit MQTT JSON config in the Ankaios manifest [mqtt-python.yaml](./mqtt-python.yaml) to add additional topics:
 
 ```json
 {
@@ -207,18 +193,15 @@ while True:
 ### Common Issues
 
 1. **Connection Refused**:
-   - Ensure MQTT broker is running
-   - Check broker address and port in `mqtt_config.json`
+   - Ensure MQTT broker is running on the shared notebook (access the shared notebook and check with `ank get workloads`)
+   - Check broker address and port in the Ankaios manifest [mqtt-python.yaml](./mqtt-python.yaml)
 
 2. **Permission Denied (GitHub)**:
    - Create repository on GitHub first
    - Set up SSH keys or use HTTPS authentication
 
-3. **Import Errors**:
-   - Install dependencies: `pip install -r requirements.txt`
-
-4. **JSON Decode Errors**:
-   - Check if publisher is sending valid JSON
+3. **JSON Decode Errors**:
+   - Check if publisher is sending valid JSON (`ank logs -f mqtt-publisher` and `ank logs -f mqtt-subscriber`)
    - Verify topic names match between publisher and subscriber
 
 ### Debug Mode
@@ -230,9 +213,7 @@ import logging
 logging.basicConfig(level=logging.DEBUG)
 ```
 
-## 📚 Dependencies
-
-- `paho-mqtt==1.6.1` - MQTT client library for Python
+In this case you need to rebuild the container image.
 
 ## 🤝 Contributing
 
