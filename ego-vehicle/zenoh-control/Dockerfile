@@ -67,7 +67,7 @@ ENV PATH=/home/${USERNAME}/.cargo/bin:/root/.cargo/bin:$PATH \
     CLANG_PATH=/usr/bin/clang-12
 
 # Switch to chosen user (root if you built with USERNAME=root)
-USER ${USERNAME}
+#USER ${USERNAME}
 WORKDIR /workspace
 
 # Ensure per-user cargo config mirrors system setting
@@ -85,15 +85,19 @@ RUN curl --proto '=https' --tlsv1.2 -sSf https://sh.rustup.rs \
 FROM DEV as COMPILE
 
 COPY . $WORKDIR
-RUN --mount=type=ssh,mode=0666 \
+WORKDIR /workspace/ego-vehicle/zenoh-control
+RUN --mount=type=bind,source=carla-setup,target=/workspace/carla-setup \
+    --mount=type=ssh,mode=0666 \
     --mount=type=cache,target=/usr/local/cargo/registry \
     --mount=type=cache,target=/usr/local/cargo/git \
     cargo fetch
 
-RUN --mount=type=cache,target=${WORKDIR}/target/release \
+RUN --mount=type=bind,source=carla-setup,target=/workspace/carla-setup \
+    --mount=type=cache,target=${WORKDIR}/target/release \
     cargo build --release
+   
 
 FROM COMPILE as PROD
 ENV RUST_LOG=info
-ENTRYPOINT ["target/release/ego-vehicle"]
+ENTRYPOINT ["/workspace/ego-vehicle/zenoh-control/target/release/ego-vehicle"]
 
