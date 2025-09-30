@@ -1,93 +1,182 @@
-# Digital Cluster - App
+## Overview
 
+**Digital Cluster App** is a modern automotive instrument cluster simulation built with Android and Jetpack Compose. It provides a customizable digital dashboard that can display vehicle information such as speed, RPM, battery usage , gear position and  power usage  level indicator. The app uses **UProtocol** for real-time communication, making it suitable for integration with vehicle data systems or simulators like CARLA.
 
+## Features
 
-## Getting started
+- **Real-time Vehicle Data Display**: Speed, battery usage, gear position and power usage
+- **Customizable Driving Modes**: Switch between different driving modes (Race, Sport+, City)
+- **Status Indicators**: Cruise control, battery usage, lights, and warning indicators // Only cruise control functionality is working, the rest is only for UI purposes
+- **Interactive Controls**: Increase/decrease speed, toggle cruise control, and activate sensors // activate sensors only UI purposes
+- **UProtocol Communication**: transport-agnostic communication framework for software-defined vehicles (SDVs) that facilitates seamless data exchange between apps, services, and devices across different platforms, including vehicles, the cloud, and mobile devices.
+- **Vehicle Type Support**: Displays appropriate gauges for electric vehicles
 
-To make it easy for you to get started with GitLab, here's a list of recommended next steps.
+## Architecture
 
-Already a pro? Just edit this README.md and make it your own. Want to make it easy? [Use the template at the bottom](#editing-this-readme)!
+The app follows a modular clean architecture approach:
 
-## Add your files
+- **UI Layer**: Jetpack Compose UI components with a ViewModel
+- **Domain Layer**: Business logic and models
+- **Data Layer**: MQTT communication and repositories
+- **Core Modules**: Design system, shared utilities, and common components
 
-- [ ] [Create](https://docs.gitlab.com/ee/user/project/repository/web_editor.html#create-a-file) or [upload](https://docs.gitlab.com/ee/user/project/repository/web_editor.html#upload-a-file) files
-- [ ] [Add files using the command line](https://docs.gitlab.com/topics/git/add_files/#add-files-to-a-git-repository) or push an existing Git repository with the following command:
+### Architecture Diagram
 
 ```
-cd existing_repo
-git remote add origin https://gitlab.engine.capgemini.com/software-engineering/portugal/internal/android-automotive-os/capgemini/digital-cluster-app.git
-git branch -M main
-git push -uf origin main
+┌─────────────────┐     ┌─────────────────┐     ┌─────────────────┐
+│                 │     │                 │     │                 │
+│  Presentation   │     │     Domain      │     │      Data       │
+│                 │     │                 │     │                 │
+└────────┬────────┘     └────────┬────────┘     └────────┬────────┘
+         │                       │                       │
+         ▼                       ▼                       ▼
+┌─────────────────┐     ┌─────────────────┐     ┌─────────────────────┐
+│  Compose UI     │     │  Domain Models  │     │  Repositories       │
+│  ViewModels     │◄────┤  Use Cases      │◄────┤  Data Sources       │
+│  UI Components  │     │  Actions        │     │  UPrtotocol Client  │
+└─────────────────┘     └─────────────────┘     └─────────────────────┘
 ```
 
-## Integrate with your tools
+## Technology Stack
 
-- [ ] [Set up project integrations](https://gitlab.engine.capgemini.com/software-engineering/portugal/internal/android-automotive-os/capgemini/digital-cluster-app/-/settings/integrations)
+- **Kotlin**: Primary programming language
+- **Jetpack Compose**: Modern UI toolkit for building native UI
+- **Hilt**: Dependency injection
+- **Coroutines & Flow**: Asynchronous programming and reactive streams
+- **uProtocol**: Unified communication protocol for vehicle data (MQTT Broker)
 
-## Collaborate with your team
+## Project Structure
 
-- [ ] [Invite team members and collaborators](https://docs.gitlab.com/ee/user/project/members/)
-- [ ] [Create a new merge request](https://docs.gitlab.com/ee/user/project/merge_requests/creating_merge_requests.html)
-- [ ] [Automatically close issues from merge requests](https://docs.gitlab.com/ee/user/project/issues/managing_issues.html#closing-issues-automatically)
-- [ ] [Enable merge request approvals](https://docs.gitlab.com/ee/user/project/merge_requests/approvals/)
-- [ ] [Set auto-merge](https://docs.gitlab.com/user/project/merge_requests/auto_merge/)
+```
+├── app/                          # Main application module
+│   └── DigitalClusterApplication.kt  # Application class with resource preloading
+├── core/
+│   ├── data/                     # Data layer with repositories and MQTT
+│   │   ├── di/                   # Dependency injection modules
+│   │   ├── mqtt/                 # Defines all the UProtocol components (Subscriber & RPC Invoker)
+│   │   └── repository/           # Data repositories
+│   ├── designsystem/             # UI design system and theming
+│   └── domain/                   # Business logic and models
+│       ├── action/               # User actions and events
+│       └── model/                # Domain models
+└── feature/
+    └── cluster/                  # Cluster display feature
+        ├── ui/                   # UI components
+        │   ├── component/        # Reusable UI components
+        │   └── screen/           # Full screens
+        └── viewmodel/            # ViewModels for the feature
+```
 
-## Test and Deploy
+## Key Components
 
-Use the built-in continuous integration in GitLab.
+### Core Components
 
-- [ ] [Get started with GitLab CI/CD](https://docs.gitlab.com/ee/ci/quick_start/)
-- [ ] [Analyze your code for known vulnerabilities with Static Application Security Testing (SAST)](https://docs.gitlab.com/ee/user/application_security/sast/)
-- [ ] [Deploy to Kubernetes, Amazon EC2, or Amazon ECS using Auto Deploy](https://docs.gitlab.com/ee/topics/autodevops/requirements.html)
-- [ ] [Use pull-based deployments for improved Kubernetes management](https://docs.gitlab.com/ee/user/clusters/agent/)
-- [ ] [Set up protected environments](https://docs.gitlab.com/ee/ci/environments/protected_environments.html)
+1. **DigitalClusterApplication**: Main application class that initializes the app and preloads critical resources.
+2. **MainActivity**: Entry point that sets up the UI and manages MQTT connections.
+3. **MqtModule**: Provides dependencies through Hilt.
 
-***
+### Data Layer
 
-# Editing this README
+1. **UProtocolRpcClientMethodInvoker**: Invoke a method on the RPC server level, and receive server callbacks.
+2. **UProtocolSubscriber**: Subscribes to MQTT topics and processes incoming messages.
+3. **UProtoMqtt**: Manages Uprotocol Utransport instance and allow method to start and close the connection.
+5. **MqttClusterRepository**: Interface for cluster data operations.
+6. **MqttClusterRepositoryImpl**: Implementation of the repository that handles data operations.
 
-When you're ready to make this README your own, just edit this file and use the handy template below (or feel free to structure it however you want - this is just a starting point!). Thanks to [makeareadme.com](https://www.makeareadme.com/) for this template.
+### Domain Layer
 
-## Suggestions for a good README
+1. **ClusterState**: Data class representing the state of the vehicle's instrument cluster.
+2. **ClusterAction**: Sealed class representing user actions on the cluster.
+3. **CentralScreenState**: Enum defining different central display modes.
 
-Every project is different, so consider which of these sections apply to yours. The sections used in the template are suggestions for most open source projects. Also keep in mind that while a README can be too long and detailed, too long is better than too short. If you think your README is too long, consider utilizing another form of documentation rather than cutting out information.
+### UI Components
 
-## Name
-Choose a self-explaining name for your project.
+1. **Cluster**: Main composable that displays the entire instrument cluster.
+2. **ClusterScreen**: Screen that hosts the Cluster composable and connects it to the ViewModel.
+3. **ClusterSpeedDisplay**: Displays the vehicle speed with a gauge.
+4. **ClusterBatteryDisplay**: Displays battery information for electric vehicles.
+5. **ClusterMiddleDisplay**: Displays the central screen content based on the current state.
+6. **ClusterTopBar**: Displays status indicators in the top bar.
+7. **ControlButtons**: Interactive buttons for controlling the cluster.
 
-## Description
-Let people know what your project can do specifically. Provide context and add a link to any reference visitors might be unfamiliar with. A list of Features or a Background subsection can also be added here. If there are alternatives to your project, this is a good place to list differentiating factors.
+### ViewModel
 
-## Badges
-On some READMEs, you may see small images that convey metadata, such as whether or not all the tests are passing for the project. You can use Shields to add some to your README. Many services also have instructions for adding a badge.
+**ClusterViewModel**: Manages the state of the cluster and handles business logic.
 
-## Visuals
-Depending on what you are making, it can be a good idea to include screenshots or even a video (you'll frequently see GIFs rather than actual videos). Tools like ttygif can help, but check out Asciinema for a more sophisticated method.
+## Communication Flow
 
-## Installation
-Within a particular ecosystem, there may be a common way of installing things, such as using Yarn, NuGet, or Homebrew. However, consider the possibility that whoever is reading your README is a novice and would like more guidance. Listing specific steps helps remove ambiguity and gets people to using your project as quickly as possible. If it only runs in a specific context like a particular programming language version or operating system or has dependencies that have to be installed manually, also add a Requirements subsection.
+1. **Data Reception**:
+    
+    - External data is received via UProtocol (MQTT)
+    - `UProtocolSubscriber` process incoming messages
+    - Data is converted to `ClusterState` objects
+2. **State Management**:
+    
+    - `MqttClusterRepository` maintains the current state
+    - `ClusterViewModel` exposes this state to the UI
+    - State changes trigger UI updates through Compose's state management
+3. **User Interaction**:
+    
+    - User actions are captured as `ClusterAction` objects
+    - `ClusterViewModel` processes these actions
+    - Actions may result in state updates or MQTT messages being published
+4. **Method Invokation**:
+    
+    - `UProtocolRpcClientMethodInvoker` invoke remotely using RPC a server method
+    - The server later will send a callback if the operation was successful or not.
 
 ## Usage
-Use examples liberally, and show the expected output if you can. It's helpful to have inline the smallest example of usage that you can demonstrate, while providing links to more sophisticated examples if they are too long to reasonably include in the README.
 
-## Support
-Tell people where they can go to for help. It can be any combination of an issue tracker, a chat room, an email address, etc.
+### Control Board
 
-## Roadmap
-If you have ideas for releases in the future, it is a good idea to list them in the README.
+- **Speed Control**: Use the + and - buttons to increase or decrease speed
+- **Cruise Control**: Toggle cruise control with the cruise control button
+- **Location Sharing**: Toggle location sharing with the location button
+- **Sensor Views**: Access different sensor information screens: // Only Static UI
+    - Front/Rear sensors: Show forward collision detection view
+    - Left/Right sensors: Toggle between blind spot detection and mode display
 
-## Contributing
-State if you are open to contributions and what your requirements are for accepting them.
+### UProtocol Topics
 
-For people who want to make changes to your project, it's helpful to have some documentation on how to get started. Perhaps there is a script that they should run or some environment variables that they need to set. Make these steps explicit. These instructions could also be useful to your future self.
+- `//cruise-control.app/C110/1/8000`: Main topic for vehicle data exchange, 
+- `//cruise-control.app/C110/1/1`: Set target operation RPC.
+- `//android-cruise-control.app/BBB/1/0`: Local Service Uri.
 
-You can also document commands to lint the code or run tests. These steps help to ensure high code quality and reduce the likelihood that the changes inadvertently break something. Having instructions for running tests is especially helpful if it requires external setup, such as starting a Selenium server for testing in a browser.
+### Data Formats
 
-## Authors and acknowledgment
-Show your appreciation to those who have contributed to the project.
+1. **JSON Format** (Primary):
 
-## License
-For open source projects, say how it is licensed.
+```json
+{
+  "Speed": 100,
+  "CruiseControl": true,
+  "RPM": 3500,
+  "EngineTemperature": 90,
+  "Gear": "D",
+  "AmbientTemperature": 25,
+  "Economy": "11.6 km/L",
+  "SpeedUnit": "mph",
+  "Battery": 80,
+  "Range": 350,
+  "TemperatureUnit": 0,
+  "ShareLocation": true,
+  "TypeOfVehicle": 0
+}
+```
 
-## Project status
-If you have run out of energy or time for your project, put a note at the top of the README saying that development has slowed down or stopped completely. Someone may choose to fork your project or volunteer to step in as a maintainer or owner, allowing your project to keep going. You can also make an explicit request for maintainers.
+2. **Key-Value Format** (Mosquitto):
+
+```
+speed=100
+cruisecontrol=true
+rpm=3500
+enginetemp=90
+gear=D
+```
+
+## Performance Optimizations
+
+1. **Resource Preloading**: Critical drawable resources are preloaded at startup.
+2. **State Caching**: The ViewModel caches state to avoid unnecessary repository calls.
+3. **Composition Optimization**: UI components use `remember` and `derivedStateOf` to prevent unnecessary recompositions.
+4. **Debouncing**: User actions are debounced to prevent rapid state changes.
