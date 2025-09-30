@@ -97,7 +97,7 @@ RUN --mount=type=bind,source=carla-setup,target=/workspace/carla-setup \
     cargo build --release
    
 
-FROM COMPILE as PROD
+FROM ubuntu:22.04
 ENV RUST_LOG=info
-ENTRYPOINT ["/workspace/ego-vehicle/zenoh-control/target/release/ego-vehicle"]
-
+COPY --from=COMPILE "/workspace/ego-vehicle/zenoh-control/target/release/ego-vehicle" "/usr/local/bin/ego-vehicle"
+ENTRYPOINT ["/usr/local/bin/ego-vehicle"]
