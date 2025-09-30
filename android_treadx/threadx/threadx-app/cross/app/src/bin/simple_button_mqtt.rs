@@ -59,7 +59,7 @@ static HEAP: StaticCell<[u8; 512]> = StaticCell::new();
 static WIFI_THREAD_STACK: StaticCell<[u8; 8192]> = StaticCell::new();
 static WIFI_THREAD: StaticCell<Thread> = StaticCell::new();
 
-static BOARD: cortex_m::interrupt::Mutex<RefCell<Option<BoardMxAz3166<I2CBus>>>> =
+static BOARD: cortex_m::interrupt::Mutex<RefCell<Option<BoardMxAz3166<I2CBus>>>>> =
     cortex_m::interrupt::Mutex::new(RefCell::new(None));
 
 static EVENT_GROUP: StaticCell<EventFlagsGroup> = StaticCell::new();
