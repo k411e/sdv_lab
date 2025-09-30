@@ -3880,9 +3880,9 @@ dependencies = [
 
 [[package]]
 name = "up-rust"
-version = "0.7.0"
+version = "0.7.1"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "8744bbbd9090e901587401bdceb9b6369da4fe2925480587aa8e89e166552270"
+checksum = "19b7b24efd967be80a986389d75afc6c2407b62c635e4362ecf5fc9b48da19aa"
 dependencies = [
  "async-trait",
  "bytes",
@@ -3891,6 +3891,7 @@ dependencies = [
  "protobuf-codegen",
  "protoc-bin-vendored",
  "rand 0.9.2",
+ "regex",
  "thiserror 1.0.69",
  "tokio",
  "tracing",
