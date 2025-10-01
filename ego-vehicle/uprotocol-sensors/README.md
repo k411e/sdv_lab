@@ -34,6 +34,25 @@ uProtocol-over-Zenoh is also used to forward the sensor data from CARLA over to 
 
 ## Usage
 
+### Run with Eclipse Ankaios
+
+#### Prerequisites
+
+- [Eclipse Ankaios v0.6.0](https://eclipse-ankaios.github.io/ankaios/0.6/usage/installation/) installed like described [here](../../README.md#install-eclipse-ankaios)
+- [Podman](https://podman.io/docs/installation) installed like described [here](../../README.md#install-podman)
+
+#### Build the container image
+
+```shell
+sudo podman build -t uprotocol-sensors .
+```
+
+#### Run with Ankaios on the shared notebook
+
+```shell
+ank apply state.yaml
+```
+
 ### Prerequisites
 
 - CARLA simulator running
