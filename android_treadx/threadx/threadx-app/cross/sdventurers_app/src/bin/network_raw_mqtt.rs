@@ -361,11 +361,11 @@ pub fn do_network(
     let ssid = "SDV_Chapter3-Team4";
     let password = "EclipseSDVC3";
 
-    // insert demo node IP here >>
-    let broker_ip = core::net::Ipv4Addr::new(192, 168, 24, 247);
+    // insert demo node IP here
+    let broker_ip = core::net::Ipv4Addr::new(192, 168, 24, 254);
 
-    let sub_topic = "driver/seat-distance";
-    let pub_topic = "driver/heartrate";
+    let sub_topic = "driver/seat_distance";
+    let pub_topic = "driver/heart_rate";
 
     let mut display_guard = display.lock(WaitForever).unwrap();
         
@@ -432,7 +432,7 @@ pub fn do_network(
                     
                     // the best json parser ever (we have one field for demo purposes only)
                     let json = msg;
-                    let prefix = "{seat-distance:";
+                    let prefix = "{seat_distance:";
                     let suffix = "}";
 
                     if json.starts_with(prefix) && json.ends_with(suffix) {
@@ -441,11 +441,11 @@ pub fn do_network(
                         match value.parse::<i32>() {
                             Ok(num) => {
                                 seat_distance = num;
-                                defmt::println!("Parsed seat-distance: {}", seat_distance);
+                                defmt::println!("Parsed seat_distance: {}", seat_distance);
                             }
                             Err(_) => {
                                 seat_distance = -1;
-                                defmt::println!("Failed to parse seat-distance value");
+                                defmt::println!("Failed to parse seat_distance value");
                             }
                         }
                     } else {
@@ -474,7 +474,7 @@ pub fn do_network(
                 defmt::println!("Button currently up");
             }
 
-            let _ = write!(send_buf, "{{\"heartrate\":{}}}", heartrate);
+            let _ = write!(send_buf, "{{\"heart_rate\":{}}}", heartrate);
             let payload = send_buf.as_bytes();
             handle_mqtt_publish(&mut transport, pub_topic, &payload);
         }
