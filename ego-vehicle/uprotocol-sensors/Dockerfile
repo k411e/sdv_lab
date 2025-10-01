@@ -56,9 +56,6 @@ RUN mkdir -p /etc/cargo && \
 # Also set the same for the default user later
 # (duplicated into the user's $HOME below after we switch users)
 
-# Prefer SSH for GitHub even if a dep uses https
-RUN git config --system url."ssh://git@github.com/".insteadOf https://github.com/
-
 # Add both common cargo bin paths to PATH (works for root or $USERNAME)
 ENV PATH=/home/${USERNAME}/.cargo/bin:/root/.cargo/bin:$PATH \
     LLVM_CONFIG_PATH=/usr/bin/llvm-config-12 \
@@ -85,9 +82,8 @@ RUN curl --proto '=https' --tlsv1.2 -sSf https://sh.rustup.rs \
 FROM DEV as COMPILE
 
 COPY . $WORKDIR
-WORKDIR /workspace/ego-vehicle/uprotocol-sensors
+WORKDIR /workspace
 RUN --mount=type=bind,source=carla-setup,target=/workspace/carla-setup \
-    --mount=type=ssh,mode=0666 \
     --mount=type=cache,target=/usr/local/cargo/registry \
     --mount=type=cache,target=/usr/local/cargo/git \
     cargo fetch
@@ -99,6 +95,6 @@ RUN --mount=type=bind,source=carla-setup,target=/workspace/carla-setup \
 
 FROM ubuntu:22.04
 ENV RUST_LOG=info
-COPY --from=COMPILE "/workspace/ego-vehicle/uprotocol-sensors/target/release/ego-vehicle" "/usr/local/bin/ego-vehicle"
+COPY --from=COMPILE "/workspace/target/release/ego-vehicle" "/usr/local/bin/ego-vehicle"
 ENTRYPOINT ["/usr/local/bin/ego-vehicle"]
 
