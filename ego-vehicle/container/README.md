@@ -6,6 +6,11 @@ The simplest way to build and run the EgoVehicle is to use the included scripts.
 
 _Note_: It's assumed that `Podman` is installed.
 
+### Build carla rust library
+
+You first need to build the carla rust library.
+Enter the carla-setup directory and execute `build_with_container.sh`.
+
 ### Build for development
 
 For development, you might want to build often until your source code builds successfully.
