@@ -47,8 +47,17 @@ struct Cli {
     /// The uProtocol topic to publish status messages to.
     /// The topic must be a valid uProtocol URI with a resource ID in the [0x8000, 0xFFFE] range.
     /// The topic's authority is used as the local uEntity authority.
-    #[arg(value_name = "URI", env = "TOPIC", default_value = "up://cruise-control.app/C110/1/8000", value_parser = UUri::from_str)]
+    #[arg(long, value_name = "URI", env = "TOPIC", default_value = "up://cruise-control.app/C110/1/8000", value_parser = UUri::from_str)]
     topic: UUri,
+    /// The time-to-live (TTL) in milliseconds for status messages that are published by this service.
+    /// This should be set to a value that is sufficiently high to account for
+    /// potential network delays and clock discrepancies between sender and receiver.
+    #[arg(long, value_name = "TTL", env = "STATUS_TTL_MS", default_value_t = 20000)]
+    status_ttl_ms: u32,
+    /// The interval in milliseconds between status messages that are published by this service.
+    /// A value of 1000 ms (1 second) is recommended to simulate a realistic update rate.
+    #[arg(long, value_name = "INTERVAL", env = "STATUS_PUBLISH_INTERVAL_MS", default_value_t = 1000)]
+    status_publish_interval_ms: u64,
 
     #[command(subcommand)]
     transport: Transports,
@@ -213,6 +222,8 @@ async fn main() -> Result<(), Box<dyn core::error::Error>> {
     let command = Cli::parse();
     let status_topic_resource_id = command.topic.resource_id();
     let status_topic = command.topic.to_uri(true);
+    let status_event_ttl = command.status_ttl_ms;
+    let status_publish_interval_ms = command.status_publish_interval_ms;
     let uri_provider = Arc::new(StaticUriProvider::try_from(&command.topic)?);
 
     let transport = get_transport(command).await?;
@@ -252,7 +263,7 @@ async fn main() -> Result<(), Box<dyn core::error::Error>> {
         if let Err(e) = publisher
             .publish(
                 status_topic_resource_id,
-                CallOptions::for_publish(Some(1000), None, Some(UPriority::UPRIORITY_CS1)),
+                CallOptions::for_publish(Some(status_event_ttl), None, Some(UPriority::UPRIORITY_CS1)),
                 Some(payload),
             )
             .await
@@ -267,7 +278,7 @@ async fn main() -> Result<(), Box<dyn core::error::Error>> {
                 status_topic, current_status_str
             );
         }
-        tokio::time::sleep(std::time::Duration::from_secs(1)).await;
+        tokio::time::sleep(std::time::Duration::from_millis(status_publish_interval_ms)).await;
     }
 }
 

@@ -4,6 +4,10 @@ A Rust-based ego vehicle controller for CARLA simulation that uses uProtocol-ove
 
 uProtocol-over-Zenoh is also used to forward the sensor data from CARLA over to an application you will write which operates with this data to create an Advanced Driver Assistance System (ADAS) / Automated Driving (AD) feature.
 
+## Troubleshooting, if failing to compile
+
+See [troubleshooting/README.md](./troubleshooting/README.md)
+
 ## Features
 
 - **CARLA Integration**: Connects to CARLA simulator and controls ego vehicle actors
@@ -92,10 +96,10 @@ cargo run --release -- [OPTIONS]
 
    ```bash
    # Local mode (peer-to-peer); no sensors
-   cargo run --release
+   RUST_LOG=info cargo run --release
 
    # Local mode (peer-to-peer); add some sensors
-   cargo run --release -- --ego_vehicle_sensor_lane_invasion_role lane_invasion_1 --ego_vehicle_sensor_image_role front_camera
+   RUST_LOG=info cargo run --release -- --ego-vehicle-sensor-lane-invasion-role lane-invasion_1 --ego-vehicle-sensor-image-role front_camera
    ```
 
 ### Detailed Example Usage
@@ -122,7 +126,7 @@ You should see a pygame window open showing the ego vehicle.
 
 ```shell
 # start the the ego-vehicle proxy to collect sensors
-cargo run --release -- --ego_vehicle_sensor_lane_invasion_role lane_invasion_1 --ego_vehicle_sensor_image_role front_camera
+RUST_LOG=info cargo run --release -- --ego-vehicle-sensor-lane-invasion-role lane-invasion_1 --ego-vehicle-sensor-image-role front_camera
 ```
 
 You should see the sensors configured be found and begin to publish in the terminal.
@@ -132,7 +136,7 @@ You should see the sensors configured be found and begin to publish in the termi
 ```shell
 # navigate to ego-vehicle-sensor-mock folder
 # start the ego-vehicle-sensor-subscriber to sanity check data is flowing
-cargo run --bin ego-vehicle-sensor-mock -- ./sensor-uprotocol-configs.json5
+RUST_LOG=info cargo run --bin ego-vehicle-sensor-subscriber -- ./sensor-uprotocol-configs.json5
 ```
 
 You should any active sensors' data flow through in the terminal, usually in abbreviated form (e.g. not all camera pixels are logged).

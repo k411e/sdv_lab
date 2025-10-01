@@ -45,6 +45,8 @@ If you don’t have access to a physical device, you can create an emulator to t
 4. Choose a system image (e.g., Android 15) and download it if needed
 5. Click **Finish** to create the virtual device
 6. Launch the emulator by clicking the **Play** icon next to the device
+7. Install adb by using the command: sudo apt install adb
+8. Change the density to 200 using the command: adb shell wm density 200
 
 ---
 

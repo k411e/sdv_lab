@@ -5,5 +5,5 @@ workloads:
     agent: agent_A
     restartPolicy: NEVER
     runtimeConfig: |
-      image: cruise-control-app:0.1
-      commandOptions: ["-e", "RUST_LOG=debug", "--net=host"]
+      image: ghcr.io/eclipse-sdv-hackathon-chapter-three/sdv-lab/cruise-control-app:latest
+      commandOptions: ["-e", "RUST_LOG=debug", "--net=host", "-e", "MQTT_BROKER_URI=mqtt://localhost"]
