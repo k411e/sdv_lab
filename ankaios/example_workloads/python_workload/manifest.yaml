@@ -11,3 +11,4 @@ workloads:
             - "*"
     runtimeConfig: |
       image: localhost/example_python_workload:0.1
+      # test 
