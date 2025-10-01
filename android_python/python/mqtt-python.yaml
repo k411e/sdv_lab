@@ -13,7 +13,7 @@ workloads:
         data: "{{publisher_data}}"
     restartPolicy: NEVER
     runtimeConfig: |
-      image: mqtt-publisher
+      image: ghcr.io/eclipse-sdv-hackathon-chapter-three/sdv-lab/mqtt-publisher:latest
       commandOptions: [ "--net=host" ]
   mqtt-subscriber:
     runtime: podman
@@ -25,7 +25,7 @@ workloads:
         data: "{{python_mqtt_settings}}"
     restartPolicy: NEVER
     runtimeConfig: |
-      image: mqtt-subscriber
+      image: ghcr.io/eclipse-sdv-hackathon-chapter-three/sdv-lab/mqtt-subscriber:latest
       commandOptions: [ "--net=host" ]
 configs:
   python_mqtt_settings: |

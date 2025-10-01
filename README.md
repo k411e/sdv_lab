@@ -124,12 +124,8 @@ Look into the detailed [shared_notebooks.md](./shared_notebooks.md) about how to
 
 ## Run
 
-Start the `cruise control` scenario by starting:
-
-- CARLA on PC1
-- AAOS Digital Cluster (Android Cuttlefish IVI) on PC1
-- Eclipse Ankaios cluster on PC2
-- Applying the Ankaios manifest [base-manifest.yaml](./base-manifest.yaml)
+1. Start the required services on the shared notebook (CARLA, Ankaios cluster with communication service like MQTT, ...)
+2. Run your applications using Ankaios on your notebook
 
 ### Run Ankaios
 
